@@ -1,18 +1,20 @@
 define([
    'module',
-   'text!tpl/user.html',
+   'text!tpl/topMenu.html'
    ],
-   function(module, User){
+   function(module, TopMenu){
 
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
+        initialize:function(){
 
-        render:function(){
+        },
+        render:function(mainMenu){
 
-            this.setElement('#kt_user');
+            this.setElement('#kt_topMenu');
             if(this.$el.children().length === 0){
-                this.$el.html(User);
+                this.$el.html(TopMenu);
             }
 
         },

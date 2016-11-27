@@ -1,8 +1,8 @@
 define([
    'module',
-   'text!tpl/user.html',
+   'text!tpl/leftMenu.html',
    ],
-   function(module, User){
+   function(module, LeftMenu){
 
 	'use strict'
 
@@ -10,11 +10,10 @@ define([
 
         render:function(){
 
-            this.setElement('#kt_user');
+            this.setElement('#kt_leftMenu');
             if(this.$el.children().length === 0){
-                this.$el.html(User);
+                this.$el.html(LeftMenu);
             }
-
         },
         hide : function(){
             this.$el.addClass('displayNone');

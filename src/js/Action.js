@@ -1,18 +1,17 @@
 define([
    'module',
-   'text!tpl/user.html',
+   'text!tpl/action.html',
    ],
-   function(module, User){
+   function(module, Action){
 
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
 
         render:function(){
-
-            this.setElement('#kt_user');
+            this.setElement('#kt_action');
             if(this.$el.children().length === 0){
-                this.$el.html(User);
+                this.$el.html(Action);
             }
 
         },

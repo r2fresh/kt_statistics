@@ -1,18 +1,18 @@
 define([
    'module',
-   'text!tpl/user.html',
+   'text!tpl/dashboard.html'
    ],
-   function(module, User){
+   function(module, Dashboard){
 
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
 
-        render:function(){
-
-            this.setElement('#kt_user');
+        render:function(mainMenu){
+            
+            this.setElement('.dashboard');
             if(this.$el.children().length === 0){
-                this.$el.html(User);
+                this.$el.html(Dashboard);
             }
 
         },

@@ -8,9 +8,10 @@ requirejs.config({
 
 requirejs([
 	'js/Login',
-	'js/User',
+	'js/Main',
+	'js/Dashboard',
 ],
-function(Login, User){
+function(Login, Main, Dashboard){
 
 	var prevView = null, routers = null;
 
@@ -33,8 +34,12 @@ function(Login, User){
 	 */
 	function routeStart(){
 		window.router = routers = new (Backbone.Router.extend());
+
 		routers.route('','defaultGuide', changeHash);
-		routers.route('*guideType', 'changeGuide', changeHash);
+        routers.route('*guideType', 'changeGuide', changeHash);
+        routers.route('*guideType/:main', 'changeMainMenu', changeHash);
+        routers.route('*guideType/:main/:sub', 'changeSubMenu', changeHash);
+
 		Backbone.history.start({pushstate:true})
 	}
 
@@ -42,26 +47,29 @@ function(Login, User){
 	 * #의 router가 변경되면 처음에 실행 되는 함수
 	 * @param {String} guideType 		선택된 가이드
 	 */
-	function changeHash( guideType){
+	function changeHash( guideType, main, sub){
+
+		console.log('guideType', guideType);
+		console.log('main', main);
+		console.log('sub', sub)
+
 		if(prevView != null){
 			prevView.hide();
 		}
 
-		switch(guideType){
+		let mainMenu = guideType;
+		let subMenu = main;
+
+		switch(mainMenu){
 			case 'login' :
 				Login.render();
 				prevView = Login;
 				Login.show();
 			break;
-			case 'user' :
-				User.render();
-				prevView = User;
-				User.show();
-			break;
 			default :
-				Login.render();
-				prevView = Login;
-				Login.show();
+				Main.render(mainMenu);
+				prevView = Main;
+				Main.show();
 			break;
 		}
 	}

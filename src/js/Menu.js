@@ -1,8 +1,8 @@
 define([
    'module',
-   'text!tpl/user.html',
+   'text!tpl/menu.html',
    ],
-   function(module, User){
+   function(module, Menu){
 
 	'use strict'
 
@@ -10,9 +10,9 @@ define([
 
         render:function(){
 
-            this.setElement('#kt_user');
+            this.setElement('#kt_menu');
             if(this.$el.children().length === 0){
-                this.$el.html(User);
+                this.$el.html(Menu);
             }
 
         },
