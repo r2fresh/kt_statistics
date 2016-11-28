@@ -2,6 +2,29 @@ body {
     padding-top: 50px;
 }
 
+/**
+ * login Style sheet
+ */
+#kt_login {
+  max-width: 570px;
+  margin: 10% auto;
+}
+#kt_login .__login_header {
+  background-color: #ffffff;
+  margin-bottom: 5px;
+  padding: 20px 0;
+  text-align: center;
+}
+#kt_login .__login_box {
+  background-color: #ffffff;
+  padding : 20px;
+}
+#kt_login .__login_footer {
+    background-color:#ffffff;
+    margin-top:5px;
+    padding:20px 0;
+}
+
 @media (min-width: 768px) {
   #kt_leftMenu {
     position: fixed;

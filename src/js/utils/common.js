@@ -1,8 +1,7 @@
 (function(){
 	window.KT = window.KT || {};
 
-	//Auction.HOST = 'http://14.32.174.222:8080'
-	//Auction.HOST = ''
+	KT.HOST = 'http://192.168.6.1:8080'
 
 	//Auction.basil = null;
 

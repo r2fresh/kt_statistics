@@ -15,6 +15,23 @@ define([
                 this.$el.html(Menu);
             }
 
+            this.$el.find('#datetimepicker20').datetimepicker({
+                viewMode: 'days',
+                format: 'DD/MM/YYYY'
+            });
+
+            this.$el.find('#datetimepicker21').datetimepicker({
+                viewMode: 'days',
+                format: 'DD/MM/YYYY'
+            });
+
+            this.$el.find('#example').DataTable({
+                "ordering" : false,
+                "info" : false,
+                'filter' : false,
+                'lengthChange' : false
+            });
+
         },
         hide : function(){
             this.$el.addClass('displayNone');

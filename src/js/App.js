@@ -62,16 +62,22 @@ function(Login, Main, Dashboard){
 
 		switch(mainMenu){
 			case 'login' :
+				$('body').css({'background-color':'#2D3E4F'})
 				Login.render();
 				prevView = Login;
 				Login.show();
 			break;
 			default :
+				$('body').css({'background-color':'#FFFFFF'})
 				Main.render(mainMenu);
 				prevView = Main;
 				Main.show();
 			break;
 		}
+	}
+
+	function onChangeBodyColor(){
+
 	}
 
 	init();
