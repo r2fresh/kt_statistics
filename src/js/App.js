@@ -21,7 +21,10 @@ function(Login, Main, Dashboard){
 	function init(){
 		var app, appName, hash = KT.util.parseHash();
 
+		console.log("1234")
+
 		routeStart();
+
 		if(hash) {
 			routers.navigate(hash.join('/'), { trigger: false, replace: true });
 		} else {
@@ -49,9 +52,15 @@ function(Login, Main, Dashboard){
 	 */
 	function changeHash( guideType, main, sub){
 
-		console.log('guideType', guideType);
-		console.log('main', main);
-		console.log('sub', sub)
+		// 로그인이 되었는지 체크
+		// hash가 null이 아니고, login이 아니라면
+		// localstorage의 auth 객체를 확인 해서 토근이 존재하는지 확인
+		// 없으면 login 페이지로 전환하고 아니면 패스
+		if(!(KT.util.parseHash() !== null && KT.util.parseHash()[0] === 'login')){
+			if(store.get('auth') === undefined){
+				window.location.href="#login"
+			}
+		}
 
 		if(prevView != null){
 			prevView.hide();
@@ -67,11 +76,18 @@ function(Login, Main, Dashboard){
 				prevView = Login;
 				Login.show();
 			break;
-			default :
+			case 'user' :
+			case 'menu' :
+			case 'action' :
+			case null :
 				$('body').css({'background-color':'#FFFFFF'})
 				Main.render(mainMenu);
 				prevView = Main;
 				Main.show();
+			break
+			default :
+				// 지정된 hash로 접근하면 dashboard로 리다이렉트
+				window.location.href="/"
 			break;
 		}
 	}
@@ -81,5 +97,7 @@ function(Login, Main, Dashboard){
 	}
 
 	init();
+
+
 
 })
