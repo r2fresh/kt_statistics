@@ -10,6 +10,9 @@ define([
         initialize:function(){
 
         },
+        events :{
+            'click .kt_info_logout_btn' : 'onLogout',
+ 		},
         render:function(mainMenu){
 
             this.setElement('#kt_topMenu');
@@ -17,6 +20,17 @@ define([
                 this.$el.html(TopMenu);
             }
 
+            this.setUserName();
+
+        },
+        setUserName:function(){
+            let username = store.get('auth').username;
+            this.$el.find('.kt_info_username strong').text(username);
+        },
+        onLogout:function(e){
+            e.preventDefault();
+            store.remove('auth');
+            window.location.href="#login";
         },
         hide : function(){
             this.$el.addClass('displayNone');

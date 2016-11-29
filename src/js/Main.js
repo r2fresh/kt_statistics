@@ -22,6 +22,8 @@ define([
     			this.prevView.hide();
     		}
 
+            console.log("여기")
+
             TopMenu.render();
             TopMenu.show();
 

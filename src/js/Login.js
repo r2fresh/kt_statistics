@@ -17,7 +17,7 @@ define([
         onSubmit:function(e){
 
             e.preventDefault();
-            console.log(KT.HOST)
+
             Model.postLogin({
                 url: KT.HOST + '/user/login',
                 method : 'POST',

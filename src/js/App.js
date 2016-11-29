@@ -59,6 +59,7 @@ function(Login, Main, Dashboard){
 		if(!(KT.util.parseHash() !== null && KT.util.parseHash()[0] === 'login')){
 			if(store.get('auth') === undefined){
 				window.location.href="#login"
+				return;
 			}
 		}
 
