@@ -1,8 +1,10 @@
 (function(){
 	window.KT = window.KT || {};
 
-	//KT.HOST = 'http://192.168.6.1:8090'
-	KT.HOST = 'http://192.168.0.7:8090'
+	KT.LOGIN_HOST = 'http://192.168.6.1:8080';
+	KT.HOST = '';
+	//KT.HOST = 'http://192.168.6.1:8080'
+	//KT.HOST = 'http://192.168.0.7:8090'
 
 	//Auction.basil = null;
 

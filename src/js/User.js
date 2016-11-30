@@ -44,12 +44,8 @@ define([
                 url: KT.HOST + '/info/membership/daily/visit?from=2016-11-01&to=2016-11-30',
                 method : 'GET',
                 headers : {
-                    'x-auth-token' : 'b4c6fe8f-4afc-4cf4-8eb9-6d1c1e14e1e4'
+                    'x-auth-token' : token
                 },
-                // beforeSend: function(xhr) {
-                //     xhr.setRequestHeader('x-auth-token','b4c6fe8f-4afc-4cf4-8eb9-6d1c1e14e1e4')
-                //     xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded')
-                // },
                 dataType : 'json',
                 contentType:"application/json; charset=UTF-8",
                 success : Function.prototype.bind.call(this.getUserSuccess,this),

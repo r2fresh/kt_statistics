@@ -19,7 +19,7 @@ define([
             e.preventDefault();
 
             Model.postLogin({
-                url: KT.HOST + '/user/login',
+                url: KT.LOGIN_HOST + '/user/login',
                 method : 'POST',
                 data : JSON.stringify({'username':'user2','password':'123qwe'}),
                 dataType : 'json',
