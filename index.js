@@ -45,6 +45,7 @@ var getFunc = function(req, res) {
             body += d;
         });
         ress.on('end', function() {
+            console.log(body)
             // Data reception is done, do whatever with it!
             var parsed = JSON.parse(body);
             res.send(parsed)
@@ -97,6 +98,8 @@ var getFunc = function(req, res) {
 }
 
 app.get('/info/membership/daily/visit', getFunc)
+app.get('/info/membership/hourly/visit', getFunc)
+app.get('/info/membership/monthly/visit', getFunc)
 
 app.listen((process.env.PORT || 5000), function () {
     console.log('Example app listening on port 5000!');
