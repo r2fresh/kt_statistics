@@ -1,8 +1,9 @@
 define([
    'module',
    'text!tpl/menu.html',
+   'js/Model'
    ],
-   function(module, Menu){
+   function(module, Menu, Model){
 
 	'use strict'
 
@@ -31,6 +32,32 @@ define([
                 'filter' : false,
                 'lengthChange' : false
             });
+
+            this.getMenu();
+
+        },
+
+        getMenu:function(){
+
+            var token = store.get('auth').token;
+
+            Model.getUser({
+                url: KT.HOST + '/info/membership/menu',
+                data:{'from':'2016-08-1','to':'2016-12-1'},
+                method : 'GET',
+                headers : {
+                    'x-auth-token' : token
+                },
+                dataType : 'json',
+                contentType:"application/json; charset=UTF-8",
+                success : Function.prototype.bind.call(this.getMenuSuccess,this),
+                error : Function.prototype.bind.call(this.getMenuError,this)
+            })
+        },
+        getMenuSuccess:function(data, textStatus, jqXHR){
+            console.log(data);
+        },
+        getMenuError:function(jsXHR, textStatus, errorThrown){
 
         },
         hide : function(){

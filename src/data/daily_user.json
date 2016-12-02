@@ -1,0 +1,26 @@
+[
+	{
+		"serviceName": "membership",
+		"date": "2016-11-25",
+		"visits": 270,
+		"uniqVisits": 35,
+		"user": 9,
+		"avgVisitTime": 433607
+	},
+	{
+		"serviceName": "membership",
+		"date": "2016-11-27",
+		"visits": 24,
+		"uniqVisits": 5,
+		"user": 3,
+		"avgVisitTime": 36390
+	},
+	{
+		"serviceName": "membership",
+		"date": "2016-11-28",
+		"visits": 815,
+		"uniqVisits": 81,
+		"user": 12,
+		"avgVisitTime": 604563
+	}
+]

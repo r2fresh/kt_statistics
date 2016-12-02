@@ -100,6 +100,8 @@ var getFunc = function(req, res) {
 app.get('/info/membership/daily/visit', getFunc)
 app.get('/info/membership/hourly/visit', getFunc)
 app.get('/info/membership/monthly/visit', getFunc)
+app.get('/info/membership/menu', getFunc)
+
 
 app.listen((process.env.PORT || 5000), function () {
     console.log('Example app listening on port 5000!');
