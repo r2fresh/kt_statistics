@@ -1,9 +1,10 @@
 define([
    'module',
    'text!tpl/user.html',
+   'text!tpl/dateTimePicker.html',
    'js/Model'
    ],
-   function(module, User, Model){
+   function(module, User, DateTimePicker, Model){
 
 	'use strict'
 
@@ -11,8 +12,12 @@ define([
 
         dayUserListTpl : '',
         hourUserListTpl : '',
+        dateTimePickerTpl : '',
 
         pathDateOption : '',
+
+        startDate : '',
+        endDate : '',
 
         events :{
             'change .kt_user_option input[name=dateRadioOption]': 'onChangeDate',
@@ -20,18 +25,61 @@ define([
  		},
         onClickSearch:function(e){
             e.preventDefault();
-            this.$el.find('.kt_user_list').empty()
+            this.$el.find('.kt_user_list').empty();
+
+            var startDateValue = this.$el.find('.kt_user_option #startDate input').val();
+            var endDateValue = this.$el.find('.kt_user_option #endDate input').val();
+
+            this.startDate = (startDateValue.split('/')).join('-');
+            this.endDate = (endDateValue.split('/')).join('-');
+
+            console.log(this.startDate)
+
             this.getUser();
         },
 
         onChangeDate:function(e){
-
             console.log( $(e.currentTarget).val() );
+            this.pathDateOption = $(e.currentTarget).val();
 
-            this.pathDateOption = $(e.currentTarget).val()
+            this.$el.find('.kt_user_option #startDate').remove();
+            this.$el.find('.kt_user_option #endDate').remove();
 
-            //pathDateOption
+            var template = Handlebars.compile(this.dateTimePickerTpl);
+            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
+            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
 
+            var viewMode = '';
+            var format = '';
+
+            if(this.pathDateOption === 'daily' || this.pathDateOption === 'hourly'){
+                viewMode = 'days';
+                format = 'YYYY/MM/DD';
+            } else if(this.pathDateOption === 'monthly'){
+                viewMode = 'months';
+                format = 'YYYY/MM';
+            }
+
+            this.$el.find('#endDate').datetimepicker({
+                viewMode : viewMode,
+                format : format
+            })
+
+            this.$el.find('#startDate').datetimepicker({
+                viewMode : viewMode,
+                format : format
+            })
+
+            if(this.pathDateOption === 'monthly'){
+                this.$el.find('#startDate').on('dp.show',function(e){
+                    $(this).data("DateTimePicker").viewMode('months');
+                })
+
+                this.$el.find('#endDate').on('dp.show',function(e){
+                    $(this).data("DateTimePicker").viewMode('months');
+                    console.log('ksy')
+                })
+            }
         },
 
         render:function(){
@@ -43,6 +91,8 @@ define([
                 this.hourUserListTpl  = this.$el.find(".hour_user_list_tpl").html();
                 this.monthUserListTpl  = this.$el.find(".month_user_list_tpl").html();
 
+                this.dateTimePickerTpl  = DateTimePicker;
+
                 this.$el.find('.kt_user_list').empty()
             }
 
@@ -51,16 +101,22 @@ define([
             //this.pathDateOptions =
 
 
-            this.$el.find('#datetimepicker10').datetimepicker({
-                viewMode: 'years',
-                format: 'MM/YYYY'
-            });
+            //$(function () {
 
-            this.$el.find('#datetimepicker2').datetimepicker({
-                viewMode: 'years',
-                format: 'MM/YYYY'
-            });
+            //});
 
+            var template = Handlebars.compile(this.dateTimePickerTpl);
+            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
+            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
+
+            this.$el.find('#endDate').datetimepicker({
+                viewMode : 'days',
+                format : 'YYYY/MM/DD'
+            })
+            this.$el.find('#startDate').datetimepicker({
+                viewMode : 'days',
+                format : 'YYYY/MM/DD'
+            })
 
 
             this.getUser();
@@ -68,6 +124,9 @@ define([
             this.setDateRadioOptions();
 
         },
+
+
+
         setDateRadioOptions:function(){
 
             //this.$el.find('.user_option input[type=radio]').
@@ -79,7 +138,7 @@ define([
 
             Model.getUser({
                 url: KT.HOST + '/info/membership/' + this.pathDateOption + '/visit',
-                data:{'from':'2016-08','to':'2016-12'},
+                data:{'from':this.startDate,'to':this.endDate},
                 method : 'GET',
                 headers : {
                     'x-auth-token' : token
