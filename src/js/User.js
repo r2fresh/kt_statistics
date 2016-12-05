@@ -51,23 +51,29 @@ define([
 
             var viewMode = '';
             var format = '';
+            var startDefaultDate = ''
 
             if(this.pathDateOption === 'daily' || this.pathDateOption === 'hourly'){
                 viewMode = 'days';
                 format = 'YYYY/MM/DD';
+                startDefaultDate = moment().format('YYYYMM') + '01'
+
             } else if(this.pathDateOption === 'monthly'){
                 viewMode = 'months';
                 format = 'YYYY/MM';
+                startDefaultDate = 'moment'
             }
 
             this.$el.find('#endDate').datetimepicker({
                 viewMode : viewMode,
-                format : format
+                format : format,
+                defaultDate : 'moment'
             })
 
             this.$el.find('#startDate').datetimepicker({
                 viewMode : viewMode,
-                format : format
+                format : format,
+                defaultDate : startDefaultDate
             })
 
             if(this.pathDateOption === 'monthly'){
@@ -105,18 +111,27 @@ define([
 
             //});
 
+            //console.log(moment())
+
+            this.startDate = moment().format('YYYY-MM-') + '01'
+            this.endDate = moment().format('YYYY-MM-DD')
+
             var template = Handlebars.compile(this.dateTimePickerTpl);
             this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
             this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
 
             this.$el.find('#endDate').datetimepicker({
                 viewMode : 'days',
-                format : 'YYYY/MM/DD'
-            })
+                format : 'YYYY/MM/DD',
+                defaultDate : 'moment',
+                ignoreReadonly : true
+            }).find('input[type="text"]').attr("readonly",true)
             this.$el.find('#startDate').datetimepicker({
                 viewMode : 'days',
-                format : 'YYYY/MM/DD'
-            })
+                format : 'YYYY/MM/DD',
+                defaultDate : moment().format('YYYYMM') + '01',
+                ignoreReadonly : true
+            }).find('input[type="text"]').attr("readonly",true)
 
 
             this.getUser();

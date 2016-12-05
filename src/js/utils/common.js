@@ -2,7 +2,7 @@
 	window.KT = window.KT || {};
 
 	KT.LOGIN_HOST = 'http://192.168.6.1:8080';
-	KT.HOST = '';
+	KT.HOST = 'http://192.168.6.1:8080';
 	//KT.HOST = 'http://192.168.6.1:8080'
 	//KT.HOST = 'http://192.168.0.7:8090'
 
