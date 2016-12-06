@@ -27,9 +27,9 @@ define([
             e.preventDefault();
             this.$el.find('.kt_user_list').empty();
 
-            var startDateValue = this.$el.find('.kt_user_option #startDate input').val();
-            var endDateValue = this.$el.find('.kt_user_option #endDate input').val();
-
+            var startDateValue = this.$el.find('.kt_user_option .startDate input').val();
+            var endDateValue = this.$el.find('.kt_user_option .endDate input').val();
+            
             this.startDate = (startDateValue.split('/')).join('-');
             this.endDate = (endDateValue.split('/')).join('-');
 
@@ -42,8 +42,8 @@ define([
             console.log( $(e.currentTarget).val() );
             this.pathDateOption = $(e.currentTarget).val();
 
-            this.$el.find('.kt_user_option #startDate').remove();
-            this.$el.find('.kt_user_option #endDate').remove();
+            this.$el.find('.kt_user_option .startDate').remove();
+            this.$el.find('.kt_user_option .endDate').remove();
 
             var template = Handlebars.compile(this.dateTimePickerTpl);
             this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
@@ -64,16 +64,18 @@ define([
                 startDefaultDate = 'moment'
             }
 
-            this.$el.find('#endDate').datetimepicker({
+            this.$el.find('.endDate').datetimepicker({
                 viewMode : viewMode,
                 format : format,
-                defaultDate : 'moment'
+                defaultDate : 'moment',
+                ignoreReadonly: true
             })
 
-            this.$el.find('#startDate').datetimepicker({
+            this.$el.find('.startDate').datetimepicker({
                 viewMode : viewMode,
                 format : format,
-                defaultDate : startDefaultDate
+                defaultDate : startDefaultDate,
+                ignoreReadonly: true
             })
 
             if(this.pathDateOption === 'monthly'){
@@ -120,17 +122,17 @@ define([
             this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
             this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
 
-            this.$el.find('#endDate').datetimepicker({
+            this.$el.find('.endDate').datetimepicker({
                 viewMode : 'days',
                 format : 'YYYY/MM/DD',
                 defaultDate : 'moment',
-                ignoreReadonly : true
+                ignoreReadonly: true
             }).find('input[type="text"]').attr("readonly",true)
-            this.$el.find('#startDate').datetimepicker({
+            this.$el.find('.startDate').datetimepicker({
                 viewMode : 'days',
                 format : 'YYYY/MM/DD',
                 defaultDate : moment().format('YYYYMM') + '01',
-                ignoreReadonly : true
+                ignoreReadonly: true
             }).find('input[type="text"]').attr("readonly",true)
 
 
