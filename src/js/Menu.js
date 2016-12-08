@@ -1,17 +1,23 @@
 define([
    'module',
    'text!tpl/menu.html',
+   'text!tpl/dateTimePicker.html',
    'js/Model',
    'data/menu.js'
    ],
-   function(module, Menu, Model, MenuData){
+   function(module, Menu, DateTimePicker, Model, MenuData){
 
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
 
+        dateTimePickerTpl : '',
+
+
+
         events :{
-            'click .kt_menu_serarch_btn': 'onClickSearch',
+            'click .kt_menu_csv_btn': 'onCVSClickHanlder',
+            'click .kt_menu_serarch_btn': 'onSearchHanlder',
  		},
 
         render:function(){
@@ -19,17 +25,9 @@ define([
             this.setElement('#kt_menu');
             if(this.$el.children().length === 0){
                 this.$el.html(Menu);
+
+                this.dateTimePickerTpl  = DateTimePicker;
             }
-
-            this.$el.find('#datetimepicker20').datetimepicker({
-                viewMode: 'days',
-                format: 'DD/MM/YYYY'
-            });
-
-            this.$el.find('#datetimepicker21').datetimepicker({
-                viewMode: 'days',
-                format: 'DD/MM/YYYY'
-            });
 
             this.$el.find('#example').DataTable({
                 "ordering" : false,
@@ -38,18 +36,138 @@ define([
                 'lengthChange' : false
             });
 
-            this.getMenu();
+            this.setDateTimePicker();
+            this.onSearchHanlder(null);
 
         },
 
-        onClickSearch:function(){
+        onSearchHanlder:function(e){
+            let queryData = {
+                'from' : this.getStartDate(),
+                'to' : this.getEndDate()
+            }
+            this.getMenu(queryData);
+        },
+
+        /**
+        * DateTimePicker rendering 및 setting
+        */
+        setDateTimePicker:function(){
+
+            var template = Handlebars.compile(this.dateTimePickerTpl);
+            this.$el.find('.kt_menu_option .kt_menu_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
+            this.$el.find('.kt_menu_option .kt_menu_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
+
+            let dateTimePickerOption = {
+                viewMode : 'days',
+                format : 'YYYY-MM-DD',
+                ignoreReadonly: true
+            }
+            this.$el.find('.startDate').datetimepicker( _.extend(dateTimePickerOption,{'defaultDate':this.getStartDate()}) )
+            this.$el.find('.endDate').datetimepicker( _.extend(dateTimePickerOption,{'defaultDate':this.getEndDate()}) )
+        },
+
+        /**
+        * 검색 시작 일 가져오기
+        */
+        getStartDate:function(){
+            let date = this.$el.find('.kt_menu_option .startDate input').val();
+            return ( date === '' ) ? moment().format('YYYY-MM-') + '01' : date;
+        },
+
+        /**
+        * 검색 끝 일 가져오기
+        */
+        getEndDate:function(){
+            let date = this.$el.find('.kt_menu_option .endDate input').val();
+            return ( date === '' ) ? moment().format('YYYY-MM-DD') : date;
+        },
+
+        /**출
+        * 메뉴별 데이터 호출
+        */
+        getMenu:function(queryData){
+
+            console.log(queryData)
+
+            this.getMenuSuccess(MenuData);
+            return;
+
+            var token = store.get('auth').token;
+
+            Model.getUser({
+                url: KT.HOST + '/info/membership/menu',
+                data:queryData,
+                method : 'GET',
+                headers : {
+                    'x-auth-token' : token
+                },
+                dataType : 'json',
+                contentType:"application/json; charset=UTF-8",
+                success : Function.prototype.bind.call(this.getMenuSuccess,this),
+                error : Function.prototype.bind.call(this.getMenuError,this)
+            })
+        },
+        getMenuSuccess:function(data, textStatus, jqXHR){
+            
+            console.log(data);
+
+
+
+            // var menuDataArr = [];
+            //
+            // var menuKeyList = _.keys( data.menuStatisticMap );
+            //
+            // for(var i=0; i<menuKeyList.length; ++i){
+            //
+            //     var keyList = _.keys( data.menuStatisticMap[menuKeyList[i]] )
+            //
+            //     var list = [];
+            //
+            //     for(var j=0; j<keyList.length; ++j){
+            //
+            //         list.push( data.menuStatisticMap[menuKeyList[i]][keyList[j]] )
+            //
+            //     }
+            //
+            //     var obj = {
+            //         'list' : list,
+            //         'menu' : menuKeyList[i],
+            //     }
+            //     menuDataArr.push(obj)
+            // }
+            //
+            // console.log( menuDataArr )
+
+        },
+        getMenuError:function(jsXHR, textStatus, errorThrown){
+
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        onCVSClickHanlder:function(){
 
 
             //var kkk = '[{"Vehicle":"BMW","Date":"30, Jul 2013 09:24 AM","Location":"Hauz Khas, Enclave, New Delhi, Delhi, India","Speed":42},{"Vehicle":"Honda CBR","Date":"30, Jul 2013 12:00 AM","Location":"Military Road,  West Bengal 734013,  India","Speed":0},{"Vehicle":"Supra","Date":"30, Jul 2013 07:53 AM","Location":"Sec-45, St. Angel\'s School, Gurgaon, Haryana, India","Speed":58},{"Vehicle":"Land Cruiser","Date":"30, Jul 2013 09:35 AM","Location":"DLF Phase I, Marble Market, Gurgaon, Haryana, India","Speed":83},{"Vehicle":"Suzuki Swift","Date":"30, Jul 2013 12:02 AM","Location":"Behind Central Bank RO, Ram Krishna Rd by-lane, Siliguri, West Bengal, India","Speed":0},{"Vehicle":"Honda Civic","Date":"30, Jul 2013 12:00 AM","Location":"Behind Central Bank RO, Ram Krishna Rd by-lane, Siliguri, West Bengal, India","Speed":0},{"Vehicle":"Honda Accord","Date":"30, Jul 2013 11:05 AM","Location":"DLF Phase IV, Super Mart 1, Gurgaon, Haryana, India","Speed":71}]'
 
             var kkk = '[{"페이지명":"DOWN","2016-12-01":100,"2016-12-02":200},{"페이지명":"DOWN/LTE","2016-12-01":300,"2016-12-02":400},{"페이지명":"DOWN/안녕하세요","2016-12-01":300,"2016-12-03":400}]'
 
-            this.test(kkk,"메뉴별&nbsp&nbsp통계", true)
+            this.test(kkk,"메뉴별 통계", true)
 
         },
 
@@ -152,63 +270,7 @@ define([
 
 
 
-        getMenu:function(){
 
-            this.getMenuSuccess(MenuData);
-            return;
-
-            var token = store.get('auth').token;
-
-            Model.getUser({
-                url: KT.HOST + '/info/membership/menu',
-                data:{'from':'2016-08-1','to':'2016-12-1'},
-                method : 'GET',
-                headers : {
-                    'x-auth-token' : token
-                },
-                dataType : 'json',
-                contentType:"application/json; charset=UTF-8",
-                success : Function.prototype.bind.call(this.getMenuSuccess,this),
-                error : Function.prototype.bind.call(this.getMenuError,this)
-            })
-        },
-        getMenuSuccess:function(data, textStatus, jqXHR){
-
-            console.log("sdfdf")
-
-            console.log(data);
-
-
-
-            // var menuDataArr = [];
-            //
-            // var menuKeyList = _.keys( data.menuStatisticMap );
-            //
-            // for(var i=0; i<menuKeyList.length; ++i){
-            //
-            //     var keyList = _.keys( data.menuStatisticMap[menuKeyList[i]] )
-            //
-            //     var list = [];
-            //
-            //     for(var j=0; j<keyList.length; ++j){
-            //
-            //         list.push( data.menuStatisticMap[menuKeyList[i]][keyList[j]] )
-            //
-            //     }
-            //
-            //     var obj = {
-            //         'list' : list,
-            //         'menu' : menuKeyList[i],
-            //     }
-            //     menuDataArr.push(obj)
-            // }
-            //
-            // console.log( menuDataArr )
-
-        },
-        getMenuError:function(jsXHR, textStatus, errorThrown){
-
-        },
         hide : function(){
             this.$el.addClass('displayNone');
         },
