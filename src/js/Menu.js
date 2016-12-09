@@ -13,11 +13,23 @@ define([
 
         dateTimePickerTpl : '',
 
+        menuOptionTpl: '',
 
+        menuListTpl:'',
+
+        areaArr:null,
+
+        areaIndex : 0,
+
+        menuIndex : 0,
+
+        menuData : null,
 
         events :{
             'click .kt_menu_csv_btn': 'onCVSClickHanlder',
             'click .kt_menu_serarch_btn': 'onSearchHanlder',
+            'change .kt_menu_option .kt_area_name_option': 'onChangeArea',
+            'change .kt_menu_option .kt_menu_name_option': 'onChangeMenu',
  		},
 
         render:function(){
@@ -27,6 +39,11 @@ define([
                 this.$el.html(Menu);
 
                 this.dateTimePickerTpl  = DateTimePicker;
+
+                this.menuOptionTpl = this.$el.find(".kt_menu_option_tpl").html();
+                this.menuListTpl = this.$el.find(".kt_menu_list_tpl").html();
+
+
             }
 
             this.$el.find('#example').DataTable({
@@ -90,8 +107,8 @@ define([
 
             console.log(queryData)
 
-            this.getMenuSuccess(MenuData);
-            return;
+            //this.getMenuSuccess(MenuData);
+            //return;
 
             var token = store.get('auth').token;
 
@@ -109,10 +126,18 @@ define([
             })
         },
         getMenuSuccess:function(data, textStatus, jqXHR){
-            
+
             console.log(data);
 
+            this.menuData = data.list;
 
+            this.areaIndex = 0;
+
+            this.menuIndex = 0;
+
+            this.setAreaSelectBox(data)
+
+            this.setMenuList();
 
             // var menuDataArr = [];
             //
@@ -144,6 +169,86 @@ define([
 
         },
 
+        setAreaSelectBox:function(data){
+
+            this.areaArr = _.map(data.list, function( areaObj, areaIndex){
+                return {
+                    'name' : areaObj.area,
+                    'index' : areaIndex ,
+                    'list' : _.map( areaObj.menuList, function( menuObj, menuIndex){
+                        return {'name':menuObj.menuName, 'index':menuIndex }
+                    })
+                }
+
+            });
+
+            if(this.$el.find('.kt_area_name_option').length > 0){
+                this.$el.find('.kt_area_name_option').remove();
+            }
+
+            var template = Handlebars.compile(this.menuOptionTpl);
+            this.$el.find('.kt_menu_option .kt_menu_csv_btn').before(template( {'className':'kt_area_name_option','list':this.areaArr} ));
+
+            this.setMenuSelectBox(this.areaIndex)
+
+        },
+
+        setMenuSelectBox:function(areaIndex){
+
+            if(this.$el.find('.kt_menu_name_option').length > 0){
+                this.$el.find('.kt_menu_name_option').remove();
+            }
+
+            var obj = {'className':'kt_menu_name_option','list':this.areaArr[areaIndex].list}
+            var template = Handlebars.compile(this.menuOptionTpl);
+            this.$el.find('.kt_menu_option .kt_menu_csv_btn').before(template(obj));
+
+        },
+
+        onChangeArea:function(e){
+
+            this.areaIndex = $(e.currentTarget).val();
+
+            this.menuIndex = 0;
+
+            this.setMenuSelectBox(this.areaIndex)
+
+            this.setMenuList();
+        },
+
+        onChangeMenu:function(e){
+
+            this.menuIndex = $(e.currentTarget).val();
+
+            this.setMenuList();
+        },
+
+        setMenuList:function(){
+
+            console.log(this.$el.find('.kt_menu_list').children().length)
+
+            if(this.$el.find('.kt_menu_list').children().length > 0){
+                this.$el.find('.kt_menu_list').empty();
+            }
+
+            var obj = this.menuData[this.areaIndex].menuList[this.menuIndex];
+
+            _.each(obj.dataList, function(obj){
+                _.extend(obj,{ 'total': obj.ios + obj.android })
+            })
+
+            var template = Handlebars.compile(this.menuListTpl);
+            this.$el.find('.kt_menu_list').html(template( {'list':obj} ));
+
+            this.$el.find('#menu_list').DataTable({
+                "ordering" : false,
+                "info" : false,
+                'filter' : false,
+                'lengthChange' : false
+            });
+        },
+
+
 
 
 
@@ -163,9 +268,12 @@ define([
         onCVSClickHanlder:function(){
 
 
+            this.menuData
+
+
             //var kkk = '[{"Vehicle":"BMW","Date":"30, Jul 2013 09:24 AM","Location":"Hauz Khas, Enclave, New Delhi, Delhi, India","Speed":42},{"Vehicle":"Honda CBR","Date":"30, Jul 2013 12:00 AM","Location":"Military Road,  West Bengal 734013,  India","Speed":0},{"Vehicle":"Supra","Date":"30, Jul 2013 07:53 AM","Location":"Sec-45, St. Angel\'s School, Gurgaon, Haryana, India","Speed":58},{"Vehicle":"Land Cruiser","Date":"30, Jul 2013 09:35 AM","Location":"DLF Phase I, Marble Market, Gurgaon, Haryana, India","Speed":83},{"Vehicle":"Suzuki Swift","Date":"30, Jul 2013 12:02 AM","Location":"Behind Central Bank RO, Ram Krishna Rd by-lane, Siliguri, West Bengal, India","Speed":0},{"Vehicle":"Honda Civic","Date":"30, Jul 2013 12:00 AM","Location":"Behind Central Bank RO, Ram Krishna Rd by-lane, Siliguri, West Bengal, India","Speed":0},{"Vehicle":"Honda Accord","Date":"30, Jul 2013 11:05 AM","Location":"DLF Phase IV, Super Mart 1, Gurgaon, Haryana, India","Speed":71}]'
 
-            var kkk = '[{"페이지명":"DOWN","2016-12-01":100,"2016-12-02":200},{"페이지명":"DOWN/LTE","2016-12-01":300,"2016-12-02":400},{"페이지명":"DOWN/안녕하세요","2016-12-01":300,"2016-12-03":400}]'
+            var kkk = '[{"페이지명":"DOWN","2016-12-01":100,"2016-12-02":200,"2016-12-03":200},{"페이지명":"DOWN/LTE","2016-12-01":300,"2016-12-03":400},{"페이지명":"DOWN/안녕하세요","2016-12-01":300,"2016-12-05":400}]'
 
             this.test(kkk,"메뉴별 통계", true)
 

@@ -5,12 +5,18 @@
     </div>
 
     <div class="col-md-12 form-inline">
-        <select class="form-control kt_action_name_option">
-          <option value="111">2222</option>
+
+        <script class="kt_menu_option_tpl" type="text/x-handlebars-template">
+        <select class="form-control {{className}}">
+            {{#list}}
+            <option value="{{index}}">{{name}}</option>
+            {{/list}}
         </select>
-        <select class="form-control kt_action_name_option">
+        </script>
+
+        <!-- <select class="form-control kt_menu_name_option">
           <option value="111">2222</option>
-        </select>
+        </select> -->
 
         <button class="btn btn-default kt_menu_csv_btn">기간내 전체 CSV 파일 내보내기</button>
     </div>
@@ -27,36 +33,29 @@
     </div> -->
 </div>
 <div class="row">
-    <div class="col-md-12">
-        <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <div class="col-md-12 kt_menu_list">
+        <script class="kt_menu_list_tpl" type="text/x-handlebars-template">
+        <img src="{{image}}" style="size:50%"/>
+        <table id="menu_list" class="table table-striped table-bordered" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th>date</th>
-                    <th>ios</th>
-                    <th>android</th>
-                    <th>합계</th>
+                    <th>Date</th>
+                    <th>IOS</th>
+                    <th>Android</th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody>
+                {{#list.dataList}}
                 <tr>
-                    <td>2016-12-01</td>
-                    <td>61</td>
-                    <td>90</td>
-                    <td>100</td>
+                    <td>{{date}}</td>
+                    <td>{{ios}}</td>
+                    <td>{{android}}</td>
+                    <td>{{total}}</td>
                 </tr>
-                <tr>
-                    <td>2016-12-01</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>100</t
-                </tr>
-                <tr>
-                    <td>2016-12-01</td>
-                    <td>100</td>
-                    <td>102</td>
-                    <td>102</td>
-                </tr>
+                {{/list.dataList}}
             </tbody>
         </table>
+        </scrpit>
     </div>
 </div>
