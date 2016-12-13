@@ -267,15 +267,71 @@ define([
 
         onCVSClickHanlder:function(){
 
+            console.log(this.menuData)
 
-            this.menuData
+            //var test = [];
+
+            var dateArr = []
+
+            _.each( this.menuData, function(obj){
+                _.each( obj.menuList, function(menuObj){
+                    _.each( menuObj.dataList, function(dataObj){
+                        dateArr.push(dataObj.date);
+                    })
+                })
+            })
+
+            var arr = _.union(dateArr);
+
+            console.log(arr)
+
+            var sss = [];
+
+            _.each( this.menuData, function(obj){
+                _.each( obj.menuList, function(menuObj){
+                    //console.log(menuObj.menuName)
+
+                    var test = {};
+
+                    test['페이지명'] = menuObj.menuName;
+
+                    _.each( menuObj.dataList, function(dataObj){
+                        dateArr.push(dataObj.date);
+
+
+
+                        _.each( arr , function(dateValue){
+
+                            if(dateValue === dataObj.date) {
+
+                                test[dateValue] = dataObj.android + dataObj.ios
+
+                            } else {
+                                test[dateValue] = 0;
+                            }
+
+                        })
+
+
+                    })
+
+
+
+                    sss.push(test)
+
+                    test = null;
+
+                })
+            })
+
+            console.log(sss)
 
 
             //var kkk = '[{"Vehicle":"BMW","Date":"30, Jul 2013 09:24 AM","Location":"Hauz Khas, Enclave, New Delhi, Delhi, India","Speed":42},{"Vehicle":"Honda CBR","Date":"30, Jul 2013 12:00 AM","Location":"Military Road,  West Bengal 734013,  India","Speed":0},{"Vehicle":"Supra","Date":"30, Jul 2013 07:53 AM","Location":"Sec-45, St. Angel\'s School, Gurgaon, Haryana, India","Speed":58},{"Vehicle":"Land Cruiser","Date":"30, Jul 2013 09:35 AM","Location":"DLF Phase I, Marble Market, Gurgaon, Haryana, India","Speed":83},{"Vehicle":"Suzuki Swift","Date":"30, Jul 2013 12:02 AM","Location":"Behind Central Bank RO, Ram Krishna Rd by-lane, Siliguri, West Bengal, India","Speed":0},{"Vehicle":"Honda Civic","Date":"30, Jul 2013 12:00 AM","Location":"Behind Central Bank RO, Ram Krishna Rd by-lane, Siliguri, West Bengal, India","Speed":0},{"Vehicle":"Honda Accord","Date":"30, Jul 2013 11:05 AM","Location":"DLF Phase IV, Super Mart 1, Gurgaon, Haryana, India","Speed":71}]'
 
             var kkk = '[{"페이지명":"DOWN","2016-12-01":100,"2016-12-02":200,"2016-12-03":200},{"페이지명":"DOWN/LTE","2016-12-01":300,"2016-12-03":400},{"페이지명":"DOWN/안녕하세요","2016-12-01":300,"2016-12-05":400}]'
 
-            this.test(kkk,"메뉴별 통계", true)
+            this.test(sss,"메뉴별 통계", true)
 
         },
 
