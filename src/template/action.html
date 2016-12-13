@@ -1,27 +1,35 @@
-<div class="row">
-    <div class="col-md-12 form-inline kt_action_option">
-        <script class="action_name_list_tpl" type="text/x-handlebars-template">
-        <select class="form-control kt_action_name_option">
-        {{#actionNameList}}
-          <option value="{{name}}">{{name}}</option>
-        {{/actionNameList}}
-        </select>
-        </script>
 
-        <button class="btn btn-default kt_action_serarch_btn">검색</button>
 
-    </div>
-    <!-- <div class="col-md-4">
-        <div class='input-group date' id='datetimepicker10' style="float:left">
-            <input type='text' class="form-control" />
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-calendar">
-                </span>
-            </span>
+<div class="panel panel-default">
+    <div class="panel-body kt_action_option">
+        <div class="row" style="margin-bottom:10px;">
+            <label class="col-md-1" style="text-align:right;padding-top:7px;"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i> 검색 구분 : </label>
+            <div class="col-md-11 form-inline kt_action_name">
+                <script class="action_name_list_tpl" type="text/x-handlebars-template">
+                <select class="form-control kt_action_name_option" style="width:auto">
+                {{#actionNameList}}
+                  <option value="{{name}}">{{name}}</option>
+                {{/actionNameList}}
+                </select>
+                </script>
+
+            </div>
         </div>
+        <div class="row">
+            <label class="col-md-1" style="text-align:right;padding-top:7px;"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i> 검색 기간 : </label>
+            <div class="col-md-11 form-inline ">
+                <button class="btn btn-primary kt_action_serarch_btn"><i class="fa fa-search" aria-hidden="true"></i> <strong>검 색</strong></button>
+
+            </div>
+        </div>
+
     </div>
-    <div class="col-md-4">
-    </div> -->
+</div>
+<div class="row" style="margin-bottom:10px;">
+    <div class="col-md-12" style="text-align:right">
+         <button class="btn btn-success"><i class="fa fa-table" aria-hidden="true"></i> <strong>테이블</strong></button>
+         <button class="btn btn-info"><i class="fa fa-line-chart" aria-hidden="true"></i> <strong>차 트</strong></button>
+    </div>
 </div>
 <div class="row">
     <div class="col-md-12 kt_action_list">

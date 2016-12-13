@@ -116,7 +116,7 @@ define([
             console.log(actionNameList)
 
             var template = Handlebars.compile(this.actionNameListTpl);
-            this.$el.find('.kt_action_option').prepend(template({'actionNameList':actionNameList}));
+            this.$el.find('.kt_action_name').append(template({'actionNameList':actionNameList}));
 
             this.actionName = this.$el.find('.kt_action_option .kt_action_name_option option:eq(0)').val();
 
@@ -212,7 +212,15 @@ define([
 
         },
         getActionError : function(jsXHR, textStatus, errorThrown){
-            console.log(jsXHR);
+            if(textStatus === 'error'){
+
+                if(jsXHR.status === 403) {
+
+                    alert('토큰이 만료 되었습니다.')
+                    store.remove('auth');
+                    window.location.href="#login";
+                }
+            }
         },
 
         hide : function(){

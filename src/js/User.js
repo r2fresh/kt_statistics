@@ -29,7 +29,7 @@ define([
 
             var startDateValue = this.$el.find('.kt_user_option .startDate input').val();
             var endDateValue = this.$el.find('.kt_user_option .endDate input').val();
-            
+
             this.startDate = (startDateValue.split('/')).join('-');
             this.endDate = (endDateValue.split('/')).join('-');
 
@@ -140,6 +140,10 @@ define([
 
             this.setDateRadioOptions();
 
+
+
+
+
         },
 
 
@@ -167,6 +171,8 @@ define([
             })
         },
         getUserSuccess:function(data, textStatus, jqXHR){
+
+
 
             if(this.pathDateOption === 'daily') {
                 var template = Handlebars.compile(this.dayUserListTpl);
@@ -200,9 +206,39 @@ define([
                 });
             }
 
+            var chart = c3.generate({
+                bindto:'#chart_2',
+                data: {
+                    x: 'x',
+                    columns: [
+                        ['x', '2010-01-01', '2011-01-01', '2012-01-01', '2013-01-01', '2014-01-01', '2015-01-01',
+                        '2010-02-01', '2011-02-01', '2012-02-01', '2013-02-01', '2014-02-01', '2015-02-01'],
+                        ['sample', 30, 200, 100, 400, 150, 250, 30, 200, 100, 400, 150, 250]
+                    ]
+                },
+                axis : {
+                    x : {
+                        type : 'timeseries',
+                        tick: {
+                           format: '%Y-%m-%d'
+                       }
+                    }
+                }
+            });
+
 
         },
         getUserError:function(jsXHR, textStatus, errorThrown){
+
+            if(textStatus === 'error'){
+
+                if(jsXHR.status === 403) {
+
+                    alert('토큰이 만료 되었습니다.')
+                    store.remove('auth');
+                    window.location.href="#login";
+                }
+            }
             //console.log(jsXHR)
             //console.log(textStatus)
             //console.log(errorThrown)

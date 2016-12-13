@@ -28,8 +28,8 @@ define([
         events :{
             'click .kt_menu_csv_btn': 'onCVSClickHanlder',
             'click .kt_menu_serarch_btn': 'onSearchHanlder',
-            'change .kt_menu_option .kt_area_name_option': 'onChangeArea',
-            'change .kt_menu_option .kt_menu_name_option': 'onChangeMenu',
+            'change  .kt_area_name_option': 'onChangeArea',
+            'change  .kt_menu_name_option': 'onChangeMenu',
  		},
 
         render:function(){
@@ -166,7 +166,15 @@ define([
 
         },
         getMenuError:function(jsXHR, textStatus, errorThrown){
+            if(textStatus === 'error'){
 
+                if(jsXHR.status === 403) {
+
+                    alert('토큰이 만료 되었습니다.')
+                    store.remove('auth');
+                    window.location.href="#login";
+                }
+            }
         },
 
         setAreaSelectBox:function(data){
@@ -187,7 +195,7 @@ define([
             }
 
             var template = Handlebars.compile(this.menuOptionTpl);
-            this.$el.find('.kt_menu_option .kt_menu_csv_btn').before(template( {'className':'kt_area_name_option','list':this.areaArr} ));
+            this.$el.find('.kt_menu_csv_btn').before(template( {'className':'kt_area_name_option','list':this.areaArr} ));
 
             this.setMenuSelectBox(this.areaIndex)
 
@@ -201,7 +209,7 @@ define([
 
             var obj = {'className':'kt_menu_name_option','list':this.areaArr[areaIndex].list}
             var template = Handlebars.compile(this.menuOptionTpl);
-            this.$el.find('.kt_menu_option .kt_menu_csv_btn').before(template(obj));
+            this.$el.find(' .kt_menu_csv_btn').before(template(obj));
 
         },
 
