@@ -56,39 +56,38 @@
 
 <div class="row" style="margin-bottom:10px;">
     <div class="col-md-12" style="text-align:right">
-         <button class="btn btn-success"><i class="fa fa-table" aria-hidden="true"></i> <strong>테이블</strong></button>
-         <button class="btn btn-info"><i class="fa fa-line-chart" aria-hidden="true"></i> <strong>차 트</strong></button>
+         <button class="btn btn-success kt_user_table_btn" data-type='success'><i class="fa fa-table" aria-hidden="true"></i> <strong>테이블</strong></button>
+         <button class="btn btn-default kt_user_chart_btn" data-type='default'><i class="fa fa-line-chart" aria-hidden="true"></i> <strong>차 트</strong></button>
     </div>
 </div>
 
 
-<!-- <div class="row">
-    <div class="col-md-12">
-        <div id="chart_2">
-        </div>
+<div class="panel panel-default kt_user_chart displayNone">
+  <div class="panel-body">
+        <div id="chart_2"></div>
     </div>
-</div> -->
-<div class="row">
+</div>
+<div class="row kt_user_table">
     <div class="col-md-12 kt_user_list">
 
         <script class="day_user_list_tpl" type="text/x-handlebars-template">
         <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th>avgVisitTime</th>
                     <th>date</th>
+                    <th>avgVisitTime</th>
                     <th>uniqVisits</th>
-                    <th>user</th>
+                    <th>pageViews</th>
                     <th>visits</th>
                 </tr>
             </thead>
             <tbody class="day_user_list">
                     {{#userList}}
                     <tr>
-                        <td>{{avgVisitTime}}</td>
                         <td>{{date}}</td>
+                        <td>{{avgVisitTime}}</td>
                         <td>{{uniqVisits}}</td>
-                        <td>{{user}}</td>
+                        <td>{{pageViews}}</td>
                         <td>{{visits}}</td>
                     </tr>
                     {{/userList}}
@@ -100,19 +99,19 @@
         <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th>uniqVisits</th>
-                    <th>users</th>
-                    <th>visits</th>
                     <th>month</th>
+                    <th>uniqVisits</th>
+                    <th>pageViews</th>
+                    <th>visits</th>
                 </tr>
             </thead>
             <tbody class="day_user_list">
                     {{#userList}}
                     <tr>
-                        <td>{{uniqVisits}}</td>
-                        <td>{{users}}</td>
-                        <td>{{visits}}</td>
                         <td>{{month}}</td>
+                        <td>{{uniqVisits}}</td>
+                        <td>{{pageViews}}</td>
+                        <td>{{visits}}</td>
                     </tr>
                     {{/userList}}
             </tbody>
@@ -123,19 +122,19 @@
         <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
             <thead>
                 <tr>
+                    <th>hour</th>
                     <th>avgUniqVisits</th>
                     <th>avgPagesViews</th>
                     <th>avgVisits</th>
-                    <th>hour</th>
                 </tr>
             </thead>
             <tbody class="day_user_list">
                     {{#userList}}
                     <tr>
+                        <td>{{hour}}</td>
                         <td>{{avgUniqVisits}}</td>
                         <td>{{avgPagesViews}}</td>
                         <td>{{avgVisits}}</td>
-                        <td>{{hour}}</td>
                     </tr>
                     {{/userList}}
             </tbody>

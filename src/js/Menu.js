@@ -122,6 +122,9 @@ define([
                 dataType : 'json',
                 contentType:"application/json; charset=UTF-8",
                 success : Function.prototype.bind.call(this.getMenuSuccess,this),
+                complete : function(sss){
+                        console.log(sss)
+                },
                 error : Function.prototype.bind.call(this.getMenuError,this)
             })
         },
@@ -166,6 +169,10 @@ define([
 
         },
         getMenuError:function(jsXHR, textStatus, errorThrown){
+            console.log(jsXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+
             if(textStatus === 'error'){
 
                 if(jsXHR.status === 403) {

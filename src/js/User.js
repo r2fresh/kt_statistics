@@ -19,10 +19,48 @@ define([
         startDate : '',
         endDate : '',
 
+        userData : null,
+
         events :{
             'change .kt_user_option input[name=dateRadioOption]': 'onChangeDate',
             'click .kt_user_serarch_btn': 'onClickSearch',
+            'click .kt_user_table_btn': 'onClickHandlerTable',
+            'click .kt_user_chart_btn': 'onClickHandlerChart'
  		},
+        onClickHandlerTable:function(e){
+
+            e.preventDefault();
+
+            var $btn = $(e.currentTarget);
+
+            if($btn.data('type') === 'default'){
+                this.$el.find('.kt_user_table').removeClass('displayNone');
+                $btn.data('type','success');
+                $btn.removeClass('btn-default').addClass('btn-success');
+            } else {
+                this.$el.find('.kt_user_table').addClass('displayNone');
+                $btn.data('type','default');
+                $btn.removeClass('btn-success').addClass('btn-default');
+            }
+
+        },
+        onClickHandlerChart:function(e){
+            e.preventDefault();
+
+            var $btn = $(e.currentTarget);
+
+            if($btn.data('type') === 'default'){
+                this.$el.find('.kt_user_chart').removeClass('displayNone');
+                $btn.data('type','info');
+                $btn.removeClass('btn-default').addClass('btn-info');
+
+                this.setUserChart();
+            } else {
+                this.$el.find('.kt_user_chart').addClass('displayNone');
+                $btn.data('type','default');
+                $btn.removeClass('btn-info').addClass('btn-default');
+            }
+        },
         onClickSearch:function(e){
             e.preventDefault();
             this.$el.find('.kt_user_list').empty();
@@ -36,6 +74,53 @@ define([
             console.log(this.startDate)
 
             this.getUser();
+        },
+
+        setUserChart:function(){
+
+
+            console.log(this.userData)
+
+            let chartData = null;
+
+            if(this.pathDateOption === 'daily'){
+                let uniqVists = (['uniqVisits']).concat(_.pluck(this.userData,'uniqVisits'))
+                let pageViews = (['pageViews']).concat(_.pluck(this.userData,'pageViews'))
+                let visits = (['views']).concat(_.pluck(this.userData,'visits'))
+                let dateArr = (['x']).concat(_.pluck(this.userData,'date'))
+
+                console.log(dateArr)
+                chartData = [dateArr, uniqVists, pageViews, visits]
+            } else if(this.pathDateOption === 'monthly') {
+                let uniqVists = (['uniqVisits']).concat(_.pluck(this.userData,'uniqVisits'))
+                let pageViews = (['pageViews']).concat(_.pluck(this.userData,'pageViews'))
+                let visits = (['views']).concat(_.pluck(this.userData,'visits'))
+                let dateArr = (['x']).concat(_.pluck(this.userData,'month'))
+
+                chartData = [dateArr, uniqVists, pageViews, visits]
+            } else if(this.pathDateOption === 'hourly') {
+                let avgPagesViews = (['avgPagesViews']).concat(_.pluck(this.userData,'avgPagesViews'))
+                let avgUniqVisits = (['avgUniqVisits']).concat(_.pluck(this.userData,'avgUniqVisits'))
+                let avgVisits = (['avgVisits']).concat(_.pluck(this.userData,'avgVisits'))
+                let dateArr = (['x']).concat(_.pluck(this.userData,'hour'))
+
+                chartData = [dateArr, avgPagesViews, avgUniqVisits, avgVisits]
+            }
+
+            console.log(chartData)
+
+            var chart = c3.generate({
+                bindto:'#chart_2',
+                data: {
+                    x : 'x',
+                    columns: chartData
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+            });
         },
 
         onChangeDate:function(e){
@@ -172,9 +257,8 @@ define([
         },
         getUserSuccess:function(data, textStatus, jqXHR){
 
-
-
             if(this.pathDateOption === 'daily') {
+                this.userData = data;
                 var template = Handlebars.compile(this.dayUserListTpl);
                 this.$el.find('.kt_user_list').html(template({'userList':data}));
 
@@ -185,6 +269,7 @@ define([
                     'lengthChange' : false
                 });
             } else if(this.pathDateOption === 'monthly'){
+                this.userData = data.list;
                 var template = Handlebars.compile(this.monthUserListTpl);
                 this.$el.find('.kt_user_list').html(template({'userList':data.list}));
 
@@ -195,6 +280,7 @@ define([
                     'lengthChange' : false
                 });
             } else if(this.pathDateOption === 'hourly'){
+                this.userData = data.hourData;
                 var template = Handlebars.compile(this.hourUserListTpl);
                 this.$el.find('.kt_user_list').html(template({'userList':data.hourData}));
 
@@ -206,26 +292,7 @@ define([
                 });
             }
 
-            var chart = c3.generate({
-                bindto:'#chart_2',
-                data: {
-                    x: 'x',
-                    columns: [
-                        ['x', '2010-01-01', '2011-01-01', '2012-01-01', '2013-01-01', '2014-01-01', '2015-01-01',
-                        '2010-02-01', '2011-02-01', '2012-02-01', '2013-02-01', '2014-02-01', '2015-02-01'],
-                        ['sample', 30, 200, 100, 400, 150, 250, 30, 200, 100, 400, 150, 250]
-                    ]
-                },
-                axis : {
-                    x : {
-                        type : 'timeseries',
-                        tick: {
-                           format: '%Y-%m-%d'
-                       }
-                    }
-                }
-            });
-
+            this.setUserChart();
 
         },
         getUserError:function(jsXHR, textStatus, errorThrown){
