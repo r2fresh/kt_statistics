@@ -3,8 +3,8 @@
 
 	console.log(location)
 
-	KT.LOGIN_HOST = (location.hostname === 'localhost') ? 'http://192.168.6.1:8000' : '';
-	KT.HOST = (location.hostname === 'localhost') ? 'http://192.168.6.1:8000' : '';
+	KT.LOGIN_HOST = 'http://192.168.6.1:8000'
+	KT.HOST = 'http://192.168.6.1:8000'
 	//KT.HOST = 'http://192.168.6.1:8080'
 	//KT.HOST = 'http://192.168.0.7:8090'
 
