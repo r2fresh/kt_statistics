@@ -84,24 +84,24 @@ define([
             let chartData = null;
 
             if(this.pathDateOption === 'daily'){
-                let uniqVists = (['uniqVisits']).concat(_.pluck(this.userData,'uniqVisits'))
-                let pageViews = (['pageViews']).concat(_.pluck(this.userData,'pageViews'))
-                let visits = (['views']).concat(_.pluck(this.userData,'visits'))
+                let uniqVists = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
+                let pageViews = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
+                let visits = (['방문자']).concat(_.pluck(this.userData,'visits'))
                 let dateArr = (['x']).concat(_.pluck(this.userData,'date'))
 
                 console.log(dateArr)
                 chartData = [dateArr, uniqVists, pageViews, visits]
             } else if(this.pathDateOption === 'monthly') {
-                let uniqVists = (['uniqVisits']).concat(_.pluck(this.userData,'uniqVisits'))
-                let pageViews = (['pageViews']).concat(_.pluck(this.userData,'pageViews'))
-                let visits = (['views']).concat(_.pluck(this.userData,'visits'))
+                let uniqVists = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
+                let pageViews = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
+                let visits = (['방문자']).concat(_.pluck(this.userData,'visits'))
                 let dateArr = (['x']).concat(_.pluck(this.userData,'month'))
 
                 chartData = [dateArr, uniqVists, pageViews, visits]
             } else if(this.pathDateOption === 'hourly') {
-                let avgPagesViews = (['avgPagesViews']).concat(_.pluck(this.userData,'avgPagesViews'))
-                let avgUniqVisits = (['avgUniqVisits']).concat(_.pluck(this.userData,'avgUniqVisits'))
-                let avgVisits = (['avgVisits']).concat(_.pluck(this.userData,'avgVisits'))
+                let avgPagesViews = (['평균페이지뷰']).concat(_.pluck(this.userData,'avgPagesViews'))
+                let avgUniqVisits = (['평균고유방문자']).concat(_.pluck(this.userData,'avgUniqVisits'))
+                let avgVisits = (['평균방문자']).concat(_.pluck(this.userData,'avgVisits'))
                 let dateArr = (['x']).concat(_.pluck(this.userData,'hour'))
 
                 chartData = [dateArr, avgPagesViews, avgUniqVisits, avgVisits]
@@ -110,7 +110,7 @@ define([
             console.log(chartData)
 
             var chart = c3.generate({
-                bindto:'#chart_2',
+                bindto:'.user_chart',
                 data: {
                     x : 'x',
                     columns: chartData
@@ -257,58 +257,49 @@ define([
         },
         getUserSuccess:function(data, textStatus, jqXHR){
 
+            Handlebars.registerHelper( 'capitalize', (str) => KT.util.millisecondToTime( parseInt(str,10) ) );
+
             if(this.pathDateOption === 'daily') {
                 this.userData = data;
                 var template = Handlebars.compile(this.dayUserListTpl);
                 this.$el.find('.kt_user_list').html(template({'userList':data}));
-
-                this.$el.find('#example').DataTable({
-                    "ordering" : false,
-                    "info" : false,
-                    'filter' : false,
-                    'lengthChange' : false
-                });
             } else if(this.pathDateOption === 'monthly'){
                 this.userData = data.list;
                 var template = Handlebars.compile(this.monthUserListTpl);
                 this.$el.find('.kt_user_list').html(template({'userList':data.list}));
-
-                this.$el.find('#example').DataTable({
-                    "ordering" : false,
-                    "info" : false,
-                    'filter' : false,
-                    'lengthChange' : false
-                });
             } else if(this.pathDateOption === 'hourly'){
                 this.userData = data.hourData;
                 var template = Handlebars.compile(this.hourUserListTpl);
                 this.$el.find('.kt_user_list').html(template({'userList':data.hourData}));
-
-                this.$el.find('#example').DataTable({
-                    "ordering" : false,
-                    "info" : false,
-                    'filter' : false,
-                    'lengthChange' : false
-                });
             }
+
+            this.$el.find('#example').DataTable({
+                "ordering" : false,
+                "info" : false,
+                'filter' : false,
+                'lengthChange' : false,
+
+                'language': {
+                    paginate: {
+                        first:    '<i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음',
+                        previous: '<i class="fa fa-angle-left" aria-hidden="true"></i> 이전',
+                        next:     '다음 <i class="fa fa-angle-right" aria-hidden="true"></i>',
+                        last:     '마지막 <i class="fa fa-angle-double-right" aria-hidden="true"></i>'
+                    }
+                }
+            });
 
             this.setUserChart();
 
         },
         getUserError:function(jsXHR, textStatus, errorThrown){
-
             if(textStatus === 'error'){
-
                 if(jsXHR.status === 403) {
-
                     alert('토큰이 만료 되었습니다.')
                     store.remove('auth');
                     window.location.href="#login";
                 }
             }
-            //console.log(jsXHR)
-            //console.log(textStatus)
-            //console.log(errorThrown)
         },
         hide : function(){
             this.$el.addClass('displayNone');

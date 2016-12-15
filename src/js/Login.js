@@ -16,12 +16,15 @@ define([
         },
         onSubmit:function(e){
 
+            var id = this.$el.find('#kt_login_insert_id').val();
+            var pwd = this.$el.find('#kt_login_pwd').val();
+
             e.preventDefault();
 
             Model.postLogin({
                 url: KT.LOGIN_HOST + '/user/login',
                 method : 'POST',
-                data : JSON.stringify({'username':'user2','password':'123qwe'}),
+                data : JSON.stringify({'username':id,'password':pwd}),
                 dataType : 'json',
                 contentType:"application/json; charset=UTF-8",
                 success : Function.prototype.bind.call(this.postLoginSuccess,this),
