@@ -25,8 +25,7 @@
 </div>
 
 <div class="row" style="margin-bottom:10px;">
-    <div class="col-md-12 form-inline">
-
+    <div class="col-md-6 form-inline kt_menu_control">
         <script class="kt_menu_option_tpl" type="text/x-handlebars-template">
         <select class="form-control {{className}}">
             {{#list}}
@@ -34,21 +33,23 @@
             {{/list}}
         </select>
         </script>
+    </div>
+    <div class="col-md-6 form-inline" style="text-align:right;">
+        <button class="btn btn-warning kt_menu_csv_btn" style="margin-right:5px;">기간내 전체 CSV 파일 내보내기</button>
+        <button class="btn btn-success kt_menu_table_btn" data-type="success"><i class="fa fa-table" aria-hidden="true"></i> <strong>테이블</strong></button>
+        <button class="btn btn-default kt_menu_chart_btn" data-type="default"><i class="fa fa-line-chart" aria-hidden="true"></i> <strong>차 트</strong></button>
+    </div>
+</div>
 
-        <!-- <select class="form-control kt_menu_name_option">
-          <option value="111">2222</option>
-        </select> -->
-        <button class="btn btn-info" style="float:right;"><i class="fa fa-line-chart" aria-hidden="true"></i> <strong>차 트</strong></button>
-        <button class="btn btn-success" style="float:right;margin-right:5px;"><i class="fa fa-table" aria-hidden="true"></i> <strong>테이블</strong></button>
-
-            <button class="btn btn-warning kt_menu_csv_btn" style="float:right;margin-right:5px;">기간내 전체 CSV 파일 내보내기</button>
-
-
+<!--  메뉴별 차트 부분-->
+<div class="panel panel-default kt_menu_chart displayNone">
+  <div class="panel-body">
+        <div class="menu_chart"></div>
     </div>
 </div>
 
 
-<div class="row">
+<div class="row kt_menu_table">
     <div class="col-md-12 kt_menu_list">
         <script class="kt_menu_list_tpl" type="text/x-handlebars-template">
         <img src="{{image}}" style="size:50%"/>

@@ -30,7 +30,41 @@ define([
             'click .kt_menu_serarch_btn': 'onSearchHanlder',
             'change  .kt_area_name_option': 'onChangeArea',
             'change  .kt_menu_name_option': 'onChangeMenu',
+            'click .kt_menu_table_btn': 'onClickHandlerTable',
+            'click .kt_menu_chart_btn': 'onClickHandlerChart'
  		},
+        onClickHandlerTable:function(e){
+            e.preventDefault();
+
+            var $btn = $(e.currentTarget);
+
+            if($btn.data('type') === 'default'){
+                this.$el.find('.kt_menu_table').removeClass('displayNone');
+                $btn.data('type','success');
+                $btn.removeClass('btn-default').addClass('btn-success');
+            } else {
+                this.$el.find('.kt_menu_table').addClass('displayNone');
+                $btn.data('type','default');
+                $btn.removeClass('btn-success').addClass('btn-default');
+            }
+        },
+        onClickHandlerChart:function(e){
+            e.preventDefault();
+
+            var $btn = $(e.currentTarget);
+
+            if($btn.data('type') === 'default'){
+                this.$el.find('.kt_menu_chart').removeClass('displayNone');
+                $btn.data('type','info');
+                $btn.removeClass('btn-default').addClass('btn-info');
+
+                this.setMenuChart();
+            } else {
+                this.$el.find('.kt_menu_chart').addClass('displayNone');
+                $btn.data('type','default');
+                $btn.removeClass('btn-info').addClass('btn-default');
+            }
+        },
 
         render:function(){
 
@@ -142,6 +176,8 @@ define([
 
             this.setMenuList();
 
+            //this.setMenuChart();
+
             // var menuDataArr = [];
             //
             // var menuKeyList = _.keys( data.menuStatisticMap );
@@ -186,6 +222,8 @@ define([
 
         setAreaSelectBox:function(data){
 
+
+
             this.areaArr = _.map(data.list, function( areaObj, areaIndex){
                 return {
                     'name' : areaObj.area,
@@ -202,7 +240,7 @@ define([
             }
 
             var template = Handlebars.compile(this.menuOptionTpl);
-            this.$el.find('.kt_menu_csv_btn').before(template( {'className':'kt_area_name_option','list':this.areaArr} ));
+            this.$el.find('.kt_menu_control').append(template( {'className':'kt_area_name_option','list':this.areaArr} ));
 
             this.setMenuSelectBox(this.areaIndex)
 
@@ -216,8 +254,50 @@ define([
 
             var obj = {'className':'kt_menu_name_option','list':this.areaArr[areaIndex].list}
             var template = Handlebars.compile(this.menuOptionTpl);
-            this.$el.find(' .kt_menu_csv_btn').before(template(obj));
+            this.$el.find('.kt_menu_control').append(template(obj));
 
+        },
+
+        setMenuImage:function(){
+
+            this.$el.find('.kt_menu_control .kt_menu_image').remove();
+
+            if(this.menuData[this.areaIndex].menuList[this.menuIndex].image !== ''){
+                this.$el.find('.kt_menu_control').append('<img class="kt_menu_image" src="' + this.menuData[this.areaIndex].menuList[this.menuIndex].image + '" style="width:100px;"/>')
+            }
+
+
+        },
+
+
+        setMenuChart:function(){
+
+            console.log(this.menuData[this.areaIndex].menuList[this.menuIndex])
+
+            let chartData = null;
+
+            let ios = (['ios']).concat(_.pluck(this.menuData[this.areaIndex].menuList[this.menuIndex].dataList,'ios'));
+            let android = (['android']).concat(_.pluck(this.menuData[this.areaIndex].menuList[this.menuIndex].dataList,'android'));
+            let dateArr = (['x']).concat(_.pluck(this.menuData[this.areaIndex].menuList[this.menuIndex].dataList,'date'));
+
+            chartData = [dateArr, ios, android]
+
+            console.log(chartData)
+
+
+            console.log("1212")
+            var chart = c3.generate({
+                bindto:'.menu_chart',
+                data: {
+                    x : 'x',
+                    columns:chartData
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+            });
         },
 
         onChangeArea:function(e){
@@ -240,6 +320,10 @@ define([
 
         setMenuList:function(){
 
+            this.setMenuImage();
+
+            this.setMenuChart();
+
             console.log(this.$el.find('.kt_menu_list').children().length)
 
             if(this.$el.find('.kt_menu_list').children().length > 0){
@@ -259,7 +343,15 @@ define([
                 "ordering" : false,
                 "info" : false,
                 'filter' : false,
-                'lengthChange' : false
+                'lengthChange' : false,
+                'language': {
+                    paginate: {
+                        first:    '<i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음',
+                        previous: '<i class="fa fa-angle-left" aria-hidden="true"></i> 이전',
+                        next:     '다음 <i class="fa fa-angle-right" aria-hidden="true"></i>',
+                        last:     '마지막 <i class="fa fa-angle-double-right" aria-hidden="true"></i>'
+                    }
+                }
             });
         },
 
