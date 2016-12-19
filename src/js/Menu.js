@@ -146,7 +146,7 @@ define([
 
             var token = store.get('auth').token;
 
-            Model.getUser({
+            Model.getMenu({
                 url: KT.HOST + '/info/membership/menu',
                 data:queryData,
                 method : 'GET',
@@ -210,7 +210,6 @@ define([
             console.log(errorThrown);
 
             if(textStatus === 'error'){
-
                 if(jsXHR.status === 403) {
 
                     alert('토큰이 만료 되었습니다.')

@@ -25,13 +25,25 @@
 
     </div>
 </div>
+
+
+<!--  서비스별 테이블과 차트 보기 버튼 -->
 <div class="row" style="margin-bottom:10px;">
     <div class="col-md-12" style="text-align:right">
-         <button class="btn btn-success"><i class="fa fa-table" aria-hidden="true"></i> <strong>테이블</strong></button>
-         <button class="btn btn-info"><i class="fa fa-line-chart" aria-hidden="true"></i> <strong>차 트</strong></button>
+         <button class="btn btn-success kt_action_table_btn" data-type='success'><i class="fa fa-table" aria-hidden="true"></i> <strong>테이블</strong></button>
+         <button class="btn btn-default kt_action_chart_btn" data-type='default'><i class="fa fa-line-chart" aria-hidden="true"></i> <strong>차 트</strong></button>
     </div>
 </div>
-<div class="row">
+
+<!--  서비스별 차트 부분-->
+<div class="panel panel-default kt_action_chart displayNone">
+  <div class="panel-body">
+        <div class="action_chart"></div>
+    </div>
+</div>
+
+<!--  서비스별 테이블 부분-->
+<div class="row kt_action_table">
     <div class="col-md-12 kt_action_list">
         <script class="action_list_tpl" type="text/x-handlebars-template">
         <table id="actionListTable" class="table table-striped table-bordered" cellspacing="0" width="100%">

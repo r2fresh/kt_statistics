@@ -17,10 +17,75 @@ define([
         startDate : '',
         endDate : '',
 
+        actionData : '',
+
         events :{
             'change .kt_action_option .kt_action_name_option': 'onChangeDate',
-            'click .kt_action_serarch_btn': 'onClickSearch'
+            'click .kt_action_serarch_btn': 'onClickSearch',
+            'click .kt_action_table_btn': 'onClickHandlerTable',
+            'click .kt_action_chart_btn': 'onClickHandlerChart'
  		},
+        onClickHandlerTable:function(e){
+
+            e.preventDefault();
+
+            var $btn = $(e.currentTarget);
+
+            if($btn.data('type') === 'default'){
+                this.$el.find('.kt_action_table').removeClass('displayNone');
+                $btn.data('type','success');
+                $btn.removeClass('btn-default').addClass('btn-success');
+            } else {
+                this.$el.find('.kt_action_table').addClass('displayNone');
+                $btn.data('type','default');
+                $btn.removeClass('btn-success').addClass('btn-default');
+            }
+
+        },
+        onClickHandlerChart:function(e){
+            e.preventDefault();
+
+            var $btn = $(e.currentTarget);
+
+            if($btn.data('type') === 'default'){
+                this.$el.find('.kt_action_chart').removeClass('displayNone');
+                $btn.data('type','info');
+                $btn.removeClass('btn-default').addClass('btn-info');
+
+                this.setActionChart();
+            } else {
+                this.$el.find('.kt_action_chart').addClass('displayNone');
+                $btn.data('type','default');
+                $btn.removeClass('btn-info').addClass('btn-default');
+            }
+        },
+
+        setActionChart:function(){
+
+
+            console.log(this.actionData)
+
+            let chartData = null;
+
+            let ios = (['ios']).concat(_.pluck(this.actionData,'ios'));
+            let android = (['android']).concat(_.pluck(this.actionData,'android'));
+            let dateArr = (['x']).concat(_.pluck(this.actionData,'date'));
+
+            chartData = [dateArr, ios, android]
+
+            var chart = c3.generate({
+                bindto:'.action_chart',
+                data: {
+                    x : 'x',
+                    columns:chartData
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+            });
+        },
 
         onChangeDate:function(e){
             this.actionName = $(e.currentTarget).val();
@@ -96,7 +161,7 @@ define([
         getActionName : function(){
             var token = store.get('auth').token;
 
-            Model.getUser({
+            Model.getActionName({
                 url: KT.HOST + '/info/service/membership/action/list',
                 method : 'GET',
                 headers : {
@@ -124,14 +189,22 @@ define([
         },
 
         getActionNameError : function(jsXHR, textStatus, errorThrown){
+            if(textStatus === 'error'){
 
+                if(jsXHR.status === 403) {
+
+                    alert('토큰이 만료 되었습니다.')
+                    store.remove('auth');
+                    window.location.href="#login";
+                }
+            }
         },
 
         getAction : function(){
 
             var token = store.get('auth').token;
 
-            Model.getUser({
+            Model.getAction({
                 url: KT.HOST + '/info/service/membership/action',
                 data:{'from':this.startDate,'to':this.endDate, 'action' : this.actionName},
                 method : 'GET',
@@ -151,8 +224,6 @@ define([
                 value[value.os] = value.actions
                 return _.omit(value,'actions')
             })
-
-            console.log(propsChange)
 
             var dateSortArr = _.uniq(_.map(propsChange,function(value, key){
                 return value.date
@@ -188,6 +259,8 @@ define([
 
             })
 
+            this.actionData = dateUniqArr;
+
             console.log(dateUniqArr)
 
             this.$el.find('.kt_action_list tbody').empty();
@@ -199,9 +272,19 @@ define([
                 "ordering" : false,
                 "info" : false,
                 'filter' : false,
-                'lengthChange' : false
+                'lengthChange' : false,
+                'language': {
+                    paginate: {
+                        first:    '<i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음',
+                        previous: '<i class="fa fa-angle-left" aria-hidden="true"></i> 이전',
+                        next:     '다음 <i class="fa fa-angle-right" aria-hidden="true"></i>',
+                        last:     '마지막 <i class="fa fa-angle-double-right" aria-hidden="true"></i>'
+                    }
+                }
             });
 
+
+            this.setActionChart()
 
             // console.log(propsChange)
             //
@@ -212,6 +295,9 @@ define([
 
         },
         getActionError : function(jsXHR, textStatus, errorThrown){
+            console.log(jsXHR)
+            console.log(textStatus)
+            console.log(errorThrown)
             if(textStatus === 'error'){
 
                 if(jsXHR.status === 403) {
