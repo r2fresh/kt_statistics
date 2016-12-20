@@ -33,6 +33,43 @@ define([
             'click .kt_menu_table_btn': 'onClickHandlerTable',
             'click .kt_menu_chart_btn': 'onClickHandlerChart'
  		},
+
+        render:function(){
+
+            this.setElement('#kt_menu');
+            if(this.$el.children().length === 0){
+                this.$el.html(Menu);
+
+                this.dateTimePickerTpl  = DateTimePicker;
+
+                this.menuOptionTpl = this.$el.find(".kt_menu_option_tpl").html();
+                this.menuListTpl = this.$el.find(".kt_menu_list_tpl").html();
+
+
+            }
+
+            this.$el.find('#example').DataTable({
+                "ordering" : false,
+                "info" : false,
+                'filter' : false,
+                'lengthChange' : false
+            });
+
+            this.setDateTimePicker();
+            this.onSearchHanlder(null);
+
+        },
+
+
+
+
+
+
+
+
+
+
+
         onClickHandlerTable:function(e){
             e.preventDefault();
 
@@ -66,38 +103,10 @@ define([
             }
         },
 
-        render:function(){
 
-            this.setElement('#kt_menu');
-            if(this.$el.children().length === 0){
-                this.$el.html(Menu);
-
-                this.dateTimePickerTpl  = DateTimePicker;
-
-                this.menuOptionTpl = this.$el.find(".kt_menu_option_tpl").html();
-                this.menuListTpl = this.$el.find(".kt_menu_list_tpl").html();
-
-
-            }
-
-            this.$el.find('#example').DataTable({
-                "ordering" : false,
-                "info" : false,
-                'filter' : false,
-                'lengthChange' : false
-            });
-
-            this.setDateTimePicker();
-            this.onSearchHanlder(null);
-
-        },
 
         onSearchHanlder:function(e){
-            let queryData = {
-                'from' : this.getStartDate(),
-                'to' : this.getEndDate()
-            }
-            this.getMenu(queryData);
+            this.getMenu();
         },
 
         /**
@@ -137,30 +146,30 @@ define([
         /**출
         * 메뉴별 데이터 호출
         */
-        getMenu:function(queryData){
-
-            console.log(queryData)
-
-            //this.getMenuSuccess(MenuData);
-            //return;
-
-            var token = store.get('auth').token;
+        getMenu:function(){
 
             Model.getMenu({
-                url: KT.HOST + '/info/membership/menu',
-                data:queryData,
-                method : 'GET',
-                headers : {
-                    'x-auth-token' : token
-                },
-                dataType : 'json',
-                contentType:"application/json; charset=UTF-8",
-                success : Function.prototype.bind.call(this.getMenuSuccess,this),
-                complete : function(sss){
-                        console.log(sss)
-                },
-                error : Function.prototype.bind.call(this.getMenuError,this)
+                'fromDate' : this.getStartDate(),
+                'toDate' : this.getEndDate(),
+                'success' : Function.prototype.bind.call(this.getMenuSuccess,this),
+                'error' : Function.prototype.bind.call(this.getMenuError,this)
             })
+
+            // Model.getMenu({
+            //     url: KT.HOST + '/info/membership/menu',
+            //     data:queryData,
+            //     method : 'GET',
+            //     headers : {
+            //         'x-auth-token' : token
+            //     },
+            //     dataType : 'json',
+            //     contentType:"application/json; charset=UTF-8",
+            //     success : Function.prototype.bind.call(this.getMenuSuccess,this),
+            //     complete : function(sss){
+            //             console.log(sss)
+            //     },
+            //     error : Function.prototype.bind.call(this.getMenuError,this)
+            // })
         },
         getMenuSuccess:function(data, textStatus, jqXHR){
 

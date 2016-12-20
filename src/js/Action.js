@@ -159,18 +159,9 @@ define([
         },
 
         getActionName : function(){
-            var token = store.get('auth').token;
-
             Model.getActionName({
-                url: KT.HOST + '/info/service/membership/action/list',
-                method : 'GET',
-                headers : {
-                    'x-auth-token' : token
-                },
-                dataType : 'json',
-                contentType:"application/json; charset=UTF-8",
-                success : Function.prototype.bind.call(this.getActionNameSuccess,this),
-                error : Function.prototype.bind.call(this.getActionNameError,this)
+                'success' : Function.prototype.bind.call(this.getActionNameSuccess,this),
+                'error' : Function.prototype.bind.call(this.getActionNameError,this)
             })
         },
 
@@ -201,22 +192,13 @@ define([
         },
 
         getAction : function(){
-
-            var token = store.get('auth').token;
-
             Model.getAction({
-                url: KT.HOST + '/info/service/membership/action',
-                data:{'from':this.startDate,'to':this.endDate, 'action' : this.actionName},
-                method : 'GET',
-                headers : {
-                    'x-auth-token' : token
-                },
-                dataType : 'json',
-                contentType:"application/json; charset=UTF-8",
-                success : Function.prototype.bind.call(this.getActionSuccess,this),
-                error : Function.prototype.bind.call(this.getActionError,this)
+                'fromDate' : this.startDate,
+                'toDate' : this.endDate,
+                'action' : this.actionName,
+                'success' : Function.prototype.bind.call(this.getActionSuccess,this),
+                'error' : Function.prototype.bind.call(this.getActionError,this)
             })
-
         },
         getActionSuccess : function(data, textStatus, jqXHR){
 

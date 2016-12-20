@@ -12,6 +12,7 @@ define([
         events :{
             'change  .kt_area_name_option': 'onChangeArea',
             'change  .kt_menu_name_option': 'onChangeMenu',
+            'change  .kt_action_option': 'onChangeAction',
  		},
 
         render:function(mainMenu){
@@ -24,89 +25,13 @@ define([
                 this.dayUserListTpl     = $(TableTemplate).find('.day-user-list-tpl').html();
                 this.menuTableTpl       = $(TableTemplate).find('.kt-menu-table-tpl').html();
                 this.actionTableTpl     = $(TableTemplate).find('.kt-action-table-tpl').html();
-                this.selectboxTpl   = $(TableTemplate).find('.kt-selectbox-tpl').html();
-
-            //     var chart = c3.generate({
-            //         bindto:'.user_chart',
-            //         data: {
-            //             x: 'x',
-            //             columns: [
-            //                 ['x', '01-01', '01-01', '01-01', '01-01', '01-01', '01-01','02-01'],
-            //                 ['sample', 30, 200, 100, 400, 150, 250, 30]
-            //             ]
-            //         }
-            //     });
-            //
-            //     var chart = c3.generate({
-            //         bindto:'.menu_chart',
-            //         data: {
-            //             x: 'x',
-            //             columns: [
-            //                 ['x', '01-01', '01-01', '01-01', '01-01', '01-01', '01-01','02-01'],
-            //                 ['sample', 30, 200, 100, 400, 150, 250, 30]
-            //             ]
-            //         }
-            //     });
-            //
-            //     var chart = c3.generate({
-            //         bindto:'.action_chart',
-            //         data: {
-            //             x: 'x',
-            //             columns: [
-            //                 ['x', '01-01', '01-01', '01-01', '01-01', '01-01', '01-01','02-01'],
-            //                 ['sample', 30, 200, 100, 400, 150, 250, 30]
-            //             ]
-            //         }
-            //     });
-            //
+                this.selectboxTpl       = $(TableTemplate).find('.kt-selectbox-tpl').html();
              }
 
             this.getUser();
             this.getMenu();
             this.getActionName();
         },
-        getActionName : function(){
-            var token = store.get('auth').token;
-
-            Model.getActionName({
-                'success' : Function.prototype.bind.call(this.getActionNameSuccess,this),
-                'error' : Function.prototype.bind.call(this.getActionNameError,this)
-            })
-        },
-        getActionNameSuccess : function(data, textStatus, jqXHR){
-            if(jqXHR.status === 200 && textStatus === 'success'){
-                this.userData = data;
-                this.setActionSelectbox(data);
-            }
-        },
-        getActionNameError : function(jsXHR, textStatus, errorThrown){
-            if(textStatus === 'error'){
-                switch(jsXHR.status){
-                    case 403:
-                        alert('토큰이 만료 되었습니다.')
-                        store.remove('auth');
-                        window.location.href="#login";
-                    break;
-                    case 0:
-                        alert('에러가 발생 했습니다.');
-                        store.remove('auth');
-                        window.location.href="/";
-                    break;
-                }
-            }
-        },
-        setActionSelectbox:function(data){
-            var actionNameList = _.map(data,function(value){return{'name':value}})
-
-            console.log(actionNameList)
-
-            var template = Handlebars.compile(this.selectboxTpl);
-            this.$el.find('.kt-dashboard-action .panel-title').after(template( {'className':'kt_area_name_option','list':actionNameList} ));
-
-            //this.actionName = this.$el.find('.kt_action_option .kt_action_name_option option:eq(0)').val();
-        },
-
-
         getUser:function(){
 
             var toDate   = moment().format('YYYY-MM-DD');
@@ -223,7 +148,6 @@ define([
             this.areaArr = _.map(this.menuData, function( areaObj, areaIndex){
                 return {
                     'name' : areaObj.area,
-                    'index' : areaIndex ,
                     'list' : _.map( areaObj.menuList, function( menuObj, menuIndex){
                         return {'name':menuObj.menuName, 'index':menuIndex }
                     })
@@ -245,7 +169,7 @@ define([
         },
 
         onChangeArea:function(e){
-            this.areaIndex = $(e.currentTarget).val();
+            this.areaIndex = $(e.currentTarget).find('option').index( $(e.currentTarget).find('option:selected'))
             this.menuIndex = 0;
             this.selectMenuData = this.menuData[this.areaIndex].menuList[this.menuIndex]
             _.each(this.selectMenuData.dataList, function(obj){
@@ -257,7 +181,7 @@ define([
         },
 
         onChangeMenu:function(e){
-            this.menuIndex = $(e.currentTarget).val();
+            this.menuIndex = $(e.currentTarget).find('option').index( $(e.currentTarget).find('option:selected'))
             this.selectMenuData = this.menuData[this.areaIndex].menuList[this.menuIndex]
             _.each(this.selectMenuData.dataList, function(obj){
                 _.extend(obj,{ 'total': obj.ios + obj.android })
@@ -297,6 +221,151 @@ define([
                     }
                 }
             });
+        },
+
+        getActionName : function(){
+            Model.getActionName({
+                'success' : Function.prototype.bind.call(this.getActionNameSuccess,this),
+                'error' : Function.prototype.bind.call(this.getActionNameError,this)
+            })
+        },
+        getActionNameSuccess : function(data, textStatus, jqXHR){
+            if(jqXHR.status === 200 && textStatus === 'success'){
+                this.actionName = data[0];
+                this.setActionSelectbox(data);
+                this.getAction();
+            }
+        },
+        getActionNameError : function(jsXHR, textStatus, errorThrown){
+            if(textStatus === 'error'){
+                switch(jsXHR.status){
+                    case 403:
+                        alert('토큰이 만료 되었습니다.')
+                        store.remove('auth');
+                        window.location.href="#login";
+                    break;
+                    case 0:
+                        alert('에러가 발생 했습니다.');
+                        store.remove('auth');
+                        window.location.href="/";
+                    break;
+                }
+            }
+        },
+        setActionSelectbox:function(data){
+            var actionNameList = _.map(data,function(value){return{'name':value}})
+            var template = Handlebars.compile(this.selectboxTpl);
+            this.$el.find('.kt-dashboard-action .panel-title').after(template( {'className':'kt_action_option','list':actionNameList} ));
+        },
+        getAction:function(){
+
+            var toDate   = moment().format('YYYY-MM-DD');
+            var duration = moment.duration(5,'week');
+            var fromDate = ( (moment()).subtract(duration) ).format('YYYY-MM-DD');
+
+            Model.getAction({
+                'fromDate' : fromDate,
+                'toDate' : toDate,
+                'action' : this.actionName,
+                'success' : Function.prototype.bind.call(this.getActionSuccess,this),
+                'error' : Function.prototype.bind.call(this.getActionError,this)
+            })
+        },
+
+        getActionSuccess : function(data, textStatus, jqXHR){
+            if(jqXHR.status === 200 && textStatus === 'success'){
+                this.setActionData(data);
+            }
+        },
+
+        getActionError : function(jsXHR, textStatus, errorThrown){
+            if(textStatus === 'error'){
+                switch(jsXHR.status){
+                    case 403:
+                        alert('토큰이 만료 되었습니다.')
+                        store.remove('auth');
+                        window.location.href="#login";
+                    break;
+                    case 0:
+                        alert('에러가 발생 했습니다.');
+                        store.remove('auth');
+                        window.location.href="/";
+                    break;
+                }
+            }
+        },
+
+        setActionData : function(data){
+            let propsChange = _.map(data,function(value, key){
+                value[value.os] = value.actions
+                return _.omit(value,'actions')
+            })
+
+            var dateSortArr = _.uniq(_.map(propsChange,function(value, key){
+                return value.date
+            }))
+
+            var dateUniqArr = [];
+
+            _.each(dateSortArr,function(value){
+
+                var temp = {
+                    action : '',
+                    date : '',
+                    android : null,
+                    ios : null,
+                    serviceName : '',
+                }
+                _.each(propsChange,function(obj){
+                    if(obj.date === value) {
+                        if(obj.action != null) { temp.action = obj.action}
+                        if(obj.date != null) { temp.date = obj.date}
+                        if(obj.android != null) { temp.android = obj.android}
+                        if(obj.ios != null) { temp.ios = obj.ios}
+                        if(obj.serviceName != null) { temp.serviceName = obj.serviceName}
+
+                    }
+                })
+                dateUniqArr.push(temp)
+                temp = null;
+            })
+
+            this.actionData = dateUniqArr;
+
+            this.setActionTable();
+            this.setActionChart();
+        },
+        setActionTable:function(){
+            this.$el.find('.kt-dashboard-action .actino-table').empty();
+            var template = Handlebars.compile(this.actionTableTpl);
+            this.$el.find('.kt-dashboard-action .action-table').html(template({'actionList':this.actionData}));
+        },
+        setActionChart:function(){
+            let chartData = null;
+
+            let ios = (['ios']).concat(_.pluck(this.actionData,'ios'));
+            let android = (['android']).concat(_.pluck(this.actionData,'android'));
+            let dateArr = (['x']).concat(_.pluck(this.actionData,'date'));
+
+            chartData = [dateArr, ios, android]
+
+            var chart = c3.generate({
+                bindto:'.kt-dashboard-action .action-chart',
+                data: {
+                    x : 'x',
+                    columns:chartData
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+            });
+        },
+        onChangeAction:function(e){
+            e.preventDefault();
+            this.actionName = $(e.currentTarget).val();
+            this.getAction();
         },
 
         hide : function(){

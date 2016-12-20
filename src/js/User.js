@@ -27,6 +27,129 @@ define([
             'click .kt_user_table_btn': 'onClickHandlerTable',
             'click .kt_user_chart_btn': 'onClickHandlerChart'
  		},
+
+        render:function(){
+
+            this.setElement('#kt_user');
+            if(this.$el.children().length === 0){
+                this.$el.html(User);
+                this.dayUserListTpl  = this.$el.find(".day_user_list_tpl").html();
+                this.hourUserListTpl  = this.$el.find(".hour_user_list_tpl").html();
+                this.monthUserListTpl  = this.$el.find(".month_user_list_tpl").html();
+
+                this.dateTimePickerTpl  = DateTimePicker;
+
+                this.$el.find('.kt_user_list').empty()
+            }
+
+            this.pathDateOption = this.$el.find('.kt_user_option input[name=dateRadioOption]:checked').val();
+
+            this.startDate = moment().format('YYYY-MM-') + '01'
+            this.endDate = moment().format('YYYY-MM-DD')
+
+            var template = Handlebars.compile(this.dateTimePickerTpl);
+            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
+            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
+
+            this.$el.find('.endDate').datetimepicker({
+                viewMode : 'days',
+                format : 'YYYY/MM/DD',
+                defaultDate : 'moment',
+                ignoreReadonly: true
+            }).find('input[type="text"]').attr("readonly",true)
+            this.$el.find('.startDate').datetimepicker({
+                viewMode : 'days',
+                format : 'YYYY/MM/DD',
+                defaultDate : moment().format('YYYYMM') + '01',
+                ignoreReadonly: true
+            }).find('input[type="text"]').attr("readonly",true)
+
+            this.getUser();
+
+            this.setDateRadioOptions();
+
+        },
+
+        getUser:function(){
+            Model.getUser({
+                'pathDateOption' : this.pathDateOption,
+                'fromDate' : this.startDate,
+                'toDate' : this.endDate,
+                'success' : Function.prototype.bind.call(this.getUserSuccess,this),
+                'error' : Function.prototype.bind.call(this.getUserError,this)
+            })
+        },
+
+
+        getUserSuccess:function(data, textStatus, jqXHR){
+
+            Handlebars.registerHelper( 'capitalize', (str) => KT.util.millisecondToTime( parseInt(str,10) ) );
+
+            if(this.pathDateOption === 'daily') {
+                this.userData = data;
+                var template = Handlebars.compile(this.dayUserListTpl);
+                this.$el.find('.kt_user_list').html(template({'userList':data}));
+            } else if(this.pathDateOption === 'monthly'){
+                this.userData = data.list;
+                var template = Handlebars.compile(this.monthUserListTpl);
+                this.$el.find('.kt_user_list').html(template({'userList':data.list}));
+            } else if(this.pathDateOption === 'hourly'){
+                this.userData = data.hourData;
+                var template = Handlebars.compile(this.hourUserListTpl);
+                this.$el.find('.kt_user_list').html(template({'userList':data.hourData}));
+            }
+
+            this.$el.find('#example').DataTable({
+                "ordering" : false,
+                "info" : false,
+                'filter' : false,
+                'lengthChange' : false,
+
+                'language': {
+                    paginate: {
+                        first:    '<i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음',
+                        previous: '<i class="fa fa-angle-left" aria-hidden="true"></i> 이전',
+                        next:     '다음 <i class="fa fa-angle-right" aria-hidden="true"></i>',
+                        last:     '마지막 <i class="fa fa-angle-double-right" aria-hidden="true"></i>'
+                    }
+                }
+            });
+
+            this.setUserChart();
+
+        },
+        getUserError:function(jsXHR, textStatus, errorThrown){
+            if(textStatus === 'error'){
+                if(jsXHR.status === 403) {
+                    alert('토큰이 만료 되었습니다.')
+                    store.remove('auth');
+                    window.location.href="#login";
+                }
+            }
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         onClickHandlerTable:function(e){
 
             e.preventDefault();
@@ -175,61 +298,7 @@ define([
             }
         },
 
-        render:function(){
 
-            this.setElement('#kt_user');
-            if(this.$el.children().length === 0){
-                this.$el.html(User);
-                this.dayUserListTpl  = this.$el.find(".day_user_list_tpl").html();
-                this.hourUserListTpl  = this.$el.find(".hour_user_list_tpl").html();
-                this.monthUserListTpl  = this.$el.find(".month_user_list_tpl").html();
-
-                this.dateTimePickerTpl  = DateTimePicker;
-
-                this.$el.find('.kt_user_list').empty()
-            }
-
-            this.pathDateOption = this.$el.find('.kt_user_option input[name=dateRadioOption]:checked').val()
-
-            //this.pathDateOptions =
-
-
-            //$(function () {
-
-            //});
-
-            //console.log(moment())
-
-            this.startDate = moment().format('YYYY-MM-') + '01'
-            this.endDate = moment().format('YYYY-MM-DD')
-
-            var template = Handlebars.compile(this.dateTimePickerTpl);
-            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
-            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
-
-            this.$el.find('.endDate').datetimepicker({
-                viewMode : 'days',
-                format : 'YYYY/MM/DD',
-                defaultDate : 'moment',
-                ignoreReadonly: true
-            }).find('input[type="text"]').attr("readonly",true)
-            this.$el.find('.startDate').datetimepicker({
-                viewMode : 'days',
-                format : 'YYYY/MM/DD',
-                defaultDate : moment().format('YYYYMM') + '01',
-                ignoreReadonly: true
-            }).find('input[type="text"]').attr("readonly",true)
-
-
-            this.getUser();
-
-            this.setDateRadioOptions();
-
-
-
-
-
-        },
 
 
 
@@ -238,69 +307,7 @@ define([
             //this.$el.find('.user_option input[type=radio]').
 
         },
-        getUser:function(){
 
-            var token = store.get('auth').token;
-
-            Model.getUser({
-                url: KT.HOST + '/info/membership/' + this.pathDateOption + '/visit',
-                data:{'from':this.startDate,'to':this.endDate},
-                method : 'GET',
-                headers : {
-                    'x-auth-token' : token
-                },
-                dataType : 'json',
-                contentType:"application/json; charset=UTF-8",
-                success : Function.prototype.bind.call(this.getUserSuccess,this),
-                error : Function.prototype.bind.call(this.getUserError,this)
-            })
-        },
-        getUserSuccess:function(data, textStatus, jqXHR){
-
-            Handlebars.registerHelper( 'capitalize', (str) => KT.util.millisecondToTime( parseInt(str,10) ) );
-
-            if(this.pathDateOption === 'daily') {
-                this.userData = data;
-                var template = Handlebars.compile(this.dayUserListTpl);
-                this.$el.find('.kt_user_list').html(template({'userList':data}));
-            } else if(this.pathDateOption === 'monthly'){
-                this.userData = data.list;
-                var template = Handlebars.compile(this.monthUserListTpl);
-                this.$el.find('.kt_user_list').html(template({'userList':data.list}));
-            } else if(this.pathDateOption === 'hourly'){
-                this.userData = data.hourData;
-                var template = Handlebars.compile(this.hourUserListTpl);
-                this.$el.find('.kt_user_list').html(template({'userList':data.hourData}));
-            }
-
-            this.$el.find('#example').DataTable({
-                "ordering" : false,
-                "info" : false,
-                'filter' : false,
-                'lengthChange' : false,
-
-                'language': {
-                    paginate: {
-                        first:    '<i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음',
-                        previous: '<i class="fa fa-angle-left" aria-hidden="true"></i> 이전',
-                        next:     '다음 <i class="fa fa-angle-right" aria-hidden="true"></i>',
-                        last:     '마지막 <i class="fa fa-angle-double-right" aria-hidden="true"></i>'
-                    }
-                }
-            });
-
-            this.setUserChart();
-
-        },
-        getUserError:function(jsXHR, textStatus, errorThrown){
-            if(textStatus === 'error'){
-                if(jsXHR.status === 403) {
-                    alert('토큰이 만료 되었습니다.')
-                    store.remove('auth');
-                    window.location.href="#login";
-                }
-            }
-        },
         hide : function(){
             this.$el.addClass('displayNone');
         },

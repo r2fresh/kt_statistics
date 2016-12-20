@@ -1,16 +1,16 @@
 (function(){
 	window.KT = window.KT || {};
 
-	console.log(location)
-
-	KT.LOGIN_HOST = 'http://192.168.6.1:8000'
-	KT.HOST = 'http://192.168.6.1:8000'
-	//KT.HOST = 'http://192.168.6.1:8080'
-	//KT.HOST = 'http://192.168.0.7:8090'
-
-	//Auction.basil = null;
-
-	//Auction.io = null;
+	switch(location.hostname){
+		case 'localhost':
+			KT.LOGIN_HOST = 'https://cms.membership.kt.com'//'http://192.168.6.1:8000'
+			KT.HOST = 'https://cms.membership.kt.com'//'http://192.168.6.1:8000'
+		break;
+		case 'cms.membership.kt.com':
+			KT.LOGIN_HOST = ''
+			KT.HOST = ''
+		break;
+	}
 })();
 
 (function(KT){

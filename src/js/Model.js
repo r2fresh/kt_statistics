@@ -4,10 +4,6 @@ define(function(require, exports, module){
 		$.ajax(data);
 	}
 
-	function getAction(data){
-		$.ajax(data);
-	}
-
 	module.exports = new (Backbone.Model.extend({
 		postLogin:postLogin,
 		getUser:function(option){
@@ -42,7 +38,26 @@ define(function(require, exports, module){
 				error : option.error,
 			});
 		},
-		getAction:getAction,
+		getToken:function(){
+			return store.get('auth').token;
+		},
+		getAction:function(option){
+
+			var token = store.get('auth').token;
+
+			$.ajax({
+                url: KT.HOST + '/info/service/membership/action',
+                data:{'from':option.fromDate,'to':option.toDate,'action' : option.action},
+                method : 'GET',
+                headers : {
+                    'x-auth-token' : token
+                },
+                dataType : 'json',
+                contentType:"application/json; charset=UTF-8",
+				success : option.success,
+				error : option.error,
+            });
+		},
 		getActionName:function(option){
 
 			var token = store.get('auth').token;
