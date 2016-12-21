@@ -52,3 +52,22 @@ body {
     padding-left: 40px;
   }
 }
+
+.panel-darkred > .panel-heading .panel-title .small{
+    font-weight:bold;
+}
+
+.panel-darkred > .panel-heading .kt_area_name_option,
+.panel-darkred > .panel-heading .kt_menu_name_option,
+.panel-darkred > .panel-heading .kt_action_option{
+    height:auto;
+    padding:1px 0px;
+}
+
+@media (min-width: 992px){
+    .kt-dashboard-user .user-table,
+    .kt-dashboard-menu .menu-table,
+    .kt-dashboard-action .action-table {
+        border-right: 1px dashed #710000;
+    }
+}

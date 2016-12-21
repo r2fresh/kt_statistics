@@ -1,11 +1,11 @@
 define([
    'module',
    'text!tpl/menu.html',
-   'text!tpl/dateTimePicker.html',
+   'text!tpl/tableTemplate.html',
    'js/Model',
    'data/menu.js'
    ],
-   function(module, Menu, DateTimePicker, Model, MenuData){
+   function(module, Menu, TableTemplate, Model, MenuData){
 
 	'use strict'
 
@@ -13,7 +13,7 @@ define([
 
         dateTimePickerTpl : '',
 
-        menuOptionTpl: '',
+        selectboxTpl: '',
 
         menuListTpl:'',
 
@@ -40,12 +40,9 @@ define([
             if(this.$el.children().length === 0){
                 this.$el.html(Menu);
 
-                this.dateTimePickerTpl  = DateTimePicker;
-
-                this.menuOptionTpl = this.$el.find(".kt_menu_option_tpl").html();
-                this.menuListTpl = this.$el.find(".kt_menu_list_tpl").html();
-
-
+                this.selectboxTpl       = $(TableTemplate).find('.kt-selectbox-tpl').html();
+                this.menuTableTpl       = $(TableTemplate).find('.kt-menu-table-tpl').html();
+                this.dateTimePickerTpl  = $(TableTemplate).find('.kt-dateTimePicker-tpl').html();
             }
 
             this.$el.find('#example').DataTable({
@@ -235,7 +232,7 @@ define([
             this.areaArr = _.map(data.list, function( areaObj, areaIndex){
                 return {
                     'name' : areaObj.area,
-                    'index' : areaIndex ,
+                    //'index' : areaIndex ,
                     'list' : _.map( areaObj.menuList, function( menuObj, menuIndex){
                         return {'name':menuObj.menuName, 'index':menuIndex }
                     })
@@ -247,7 +244,7 @@ define([
                 this.$el.find('.kt_area_name_option').remove();
             }
 
-            var template = Handlebars.compile(this.menuOptionTpl);
+            var template = Handlebars.compile(this.selectboxTpl);
             this.$el.find('.kt_menu_control').append(template( {'className':'kt_area_name_option','list':this.areaArr} ));
 
             this.setMenuSelectBox(this.areaIndex)
@@ -261,7 +258,7 @@ define([
             }
 
             var obj = {'className':'kt_menu_name_option','list':this.areaArr[areaIndex].list}
-            var template = Handlebars.compile(this.menuOptionTpl);
+            var template = Handlebars.compile(this.selectboxTpl);
             this.$el.find('.kt_menu_control').append(template(obj));
 
         },
@@ -310,7 +307,7 @@ define([
 
         onChangeArea:function(e){
 
-            this.areaIndex = $(e.currentTarget).val();
+            this.areaIndex = $(e.currentTarget).find('option').index( $(e.currentTarget).find('option:selected'))
 
             this.menuIndex = 0;
 
@@ -321,7 +318,7 @@ define([
 
         onChangeMenu:function(e){
 
-            this.menuIndex = $(e.currentTarget).val();
+            this.menuIndex = $(e.currentTarget).find('option').index( $(e.currentTarget).find('option:selected'))
 
             this.setMenuList();
         },
@@ -344,10 +341,10 @@ define([
                 _.extend(obj,{ 'total': obj.ios + obj.android })
             })
 
-            var template = Handlebars.compile(this.menuListTpl);
+            var template = Handlebars.compile(this.menuTableTpl);
             this.$el.find('.kt_menu_list').html(template( {'list':obj} ));
 
-            this.$el.find('#menu_list').DataTable({
+            this.$el.find('.kt_menu_table table').DataTable({
                 "ordering" : false,
                 "info" : false,
                 'filter' : false,

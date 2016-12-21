@@ -35,7 +35,7 @@ define([
         getUser:function(){
 
             var toDate   = moment().format('YYYY-MM-DD');
-            var duration = moment.duration(5,'week');
+            var duration = moment.duration(1,'week');
             var fromDate = ( (moment()).subtract(duration) ).format('YYYY-MM-DD')
 
             Model.getUser({
@@ -100,7 +100,7 @@ define([
         },
         getMenu:function(){
             var toDate   = moment().format('YYYY-MM-DD');
-            var duration = moment.duration(5,'week');
+            var duration = moment.duration(1,'week');
             var fromDate = ( (moment()).subtract(duration) ).format('YYYY-MM-DD')
 
             Model.getMenu({
@@ -260,7 +260,7 @@ define([
         getAction:function(){
 
             var toDate   = moment().format('YYYY-MM-DD');
-            var duration = moment.duration(5,'week');
+            var duration = moment.duration(1,'week');
             var fromDate = ( (moment()).subtract(duration) ).format('YYYY-MM-DD');
 
             Model.getAction({

@@ -1,10 +1,10 @@
 define([
    'module',
    'text!tpl/user.html',
-   'text!tpl/dateTimePicker.html',
+   'text!tpl/tableTemplate.html',
    'js/Model'
    ],
-   function(module, User, DateTimePicker, Model){
+   function(module, User, TableTemplate, Model){
 
 	'use strict'
 
@@ -33,11 +33,11 @@ define([
             this.setElement('#kt_user');
             if(this.$el.children().length === 0){
                 this.$el.html(User);
-                this.dayUserListTpl  = this.$el.find(".day_user_list_tpl").html();
-                this.hourUserListTpl  = this.$el.find(".hour_user_list_tpl").html();
-                this.monthUserListTpl  = this.$el.find(".month_user_list_tpl").html();
 
-                this.dateTimePickerTpl  = DateTimePicker;
+                this.dayUserListTpl     = $(TableTemplate).find('.day-user-list-tpl').html();
+                this.hourUserListTpl    = $(TableTemplate).find('.hour_user_list_tpl').html();
+                this.monthUserListTpl   = $(TableTemplate).find('.month_user_list_tpl').html();
+                this.dateTimePickerTpl  = $(TableTemplate).find('.kt-dateTimePicker-tpl').html();
 
                 this.$el.find('.kt_user_list').empty()
             }
@@ -83,7 +83,7 @@ define([
 
         getUserSuccess:function(data, textStatus, jqXHR){
 
-            Handlebars.registerHelper( 'capitalize', (str) => KT.util.millisecondToTime( parseInt(str,10) ) );
+
 
             if(this.pathDateOption === 'daily') {
                 this.userData = data;
@@ -99,7 +99,7 @@ define([
                 this.$el.find('.kt_user_list').html(template({'userList':data.hourData}));
             }
 
-            this.$el.find('#example').DataTable({
+            this.$el.find('.kt_user_list table').DataTable({
                 "ordering" : false,
                 "info" : false,
                 'filter' : false,

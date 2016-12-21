@@ -6,19 +6,6 @@
                 <!--  DateTimePicker import Area -->
                 <button class="btn btn-primary kt_menu_serarch_btn"><i class="fa fa-search" aria-hidden="true"></i> <strong>검 색</strong></button>
             </div>
-
-
-            <!-- <div class="col-md-4">
-                <div class='input-group date' id='datetimepicker10' style="float:left">
-                    <input type='text' class="form-control" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar">
-                        </span>
-                    </span>
-                </div>
-            </div>
-            <div class="col-md-4">
-            </div> -->
         </div>
 
     </div>
@@ -26,13 +13,7 @@
 
 <div class="row" style="margin-bottom:10px;">
     <div class="col-md-6 form-inline kt_menu_control">
-        <script class="kt_menu_option_tpl" type="text/x-handlebars-template">
-        <select class="form-control {{className}}">
-            {{#list}}
-            <option value="{{index}}">{{name}}</option>
-            {{/list}}
-        </select>
-        </script>
+        <!-- 메뉴별 검색 옵션 템플릿 selectbox 삽입되는 곳-->
     </div>
     <div class="col-md-6 form-inline" style="text-align:right;">
         <button class="btn btn-warning kt_menu_csv_btn" style="margin-right:5px;">기간내 전체 CSV 파일 내보내기</button>
@@ -48,31 +29,8 @@
     </div>
 </div>
 
-
 <div class="row kt_menu_table">
     <div class="col-md-12 kt_menu_list">
-        <script class="kt_menu_list_tpl" type="text/x-handlebars-template">
-        <img src="{{image}}" style="size:50%"/>
-        <table id="menu_list" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>IOS</th>
-                    <th>Android</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#list.dataList}}
-                <tr>
-                    <td>{{date}}</td>
-                    <td>{{ios}}</td>
-                    <td>{{android}}</td>
-                    <td>{{total}}</td>
-                </tr>
-                {{/list.dataList}}
-            </tbody>
-        </table>
-        </scrpit>
+        <!-- 메뉴별 테이블 템플릿 html 삽입되는 곳-->
     </div>
 </div>

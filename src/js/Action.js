@@ -1,17 +1,17 @@
 define([
    'module',
    'text!tpl/action.html',
-   'text!tpl/dateTimePicker.html',
+   'text!tpl/tableTemplate.html',
    'js/Model'
    ],
-   function(module, Action, DateTimePicker, Model){
+   function(module, Action, TableTemplate, Model){
 
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
 
         actionListTpl : '',
-        actionNameListTpl : '',
+        selectboxTpl : '',
         actionName : '',
 
         startDate : '',
@@ -20,11 +20,65 @@ define([
         actionData : '',
 
         events :{
-            'change .kt_action_option .kt_action_name_option': 'onChangeDate',
+            'change .kt_action_option .kt_action_option': 'onChangeAction',
             'click .kt_action_serarch_btn': 'onClickSearch',
             'click .kt_action_table_btn': 'onClickHandlerTable',
             'click .kt_action_chart_btn': 'onClickHandlerChart'
  		},
+
+        render:function(){
+            this.setElement('#kt_action');
+            if(this.$el.children().length === 0){
+                this.$el.html(Action);
+
+                this.selectboxTpl       = $(TableTemplate).find('.kt-selectbox-tpl').html();
+                this.actionListTpl      = $(TableTemplate).find('.kt-action-table-tpl').html();
+                this.dateTimePickerTpl  = $(TableTemplate).find('.kt-dateTimePicker-tpl').html();
+
+            }
+
+            // this.$el.find('.kt_action_table table').datetimepicker({
+            //     viewMode: 'days',
+            //     format: 'DD/MM/YYYY'
+            // });
+            //
+            // this.$el.find('.kt_action_table table').datetimepicker({
+            //     viewMode: 'days',
+            //     format: 'DD/MM/YYYY'
+            // });
+
+            // this.$el.find('#example').DataTable({
+            //     "ordering" : false,
+            //     "info" : false,
+            //     'filter' : false,
+            //     'lengthChange' : false
+            // });
+
+
+            this.startDate = moment().format('YYYY-MM-') + '01'
+            this.endDate = moment().format('YYYY-MM-DD')
+
+            var template = Handlebars.compile(this.dateTimePickerTpl);
+            this.$el.find('.kt_action_option .kt_action_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
+            this.$el.find('.kt_action_option .kt_action_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
+
+            this.$el.find('.endDate').datetimepicker({
+                viewMode : 'days',
+                format : 'YYYY/MM/DD',
+                defaultDate : 'moment',
+                ignoreReadonly: true
+            }).find('input[type="text"]').attr("readonly",true)
+            this.$el.find('.startDate').datetimepicker({
+                viewMode : 'days',
+                format : 'YYYY/MM/DD',
+                defaultDate : moment().format('YYYYMM') + '01',
+                ignoreReadonly: true
+            }).find('input[type="text"]').attr("readonly",true)
+
+
+            this.getActionName();
+        },
+
         onClickHandlerTable:function(e){
 
             e.preventDefault();
@@ -87,7 +141,7 @@ define([
             });
         },
 
-        onChangeDate:function(e){
+        onChangeAction:function(e){
             this.actionName = $(e.currentTarget).val();
         },
 
@@ -104,59 +158,7 @@ define([
             this.getAction();
         },
 
-        render:function(){
-            this.setElement('#kt_action');
-            if(this.$el.children().length === 0){
-                this.$el.html(Action);
 
-                this.actionNameListTpl  = this.$el.find(".action_name_list_tpl").html();
-                this.actionListTpl  = this.$el.find(".action_list_tpl").html();
-
-                this.dateTimePickerTpl  = DateTimePicker;
-
-            }
-
-            this.$el.find('#datetimepicker30').datetimepicker({
-                viewMode: 'days',
-                format: 'DD/MM/YYYY'
-            });
-
-            this.$el.find('#datetimepicker31').datetimepicker({
-                viewMode: 'days',
-                format: 'DD/MM/YYYY'
-            });
-
-            // this.$el.find('#example').DataTable({
-            //     "ordering" : false,
-            //     "info" : false,
-            //     'filter' : false,
-            //     'lengthChange' : false
-            // });
-
-
-            this.startDate = '2016-05-01'//moment().format('YYYY-MM-') + '01'
-            this.endDate = moment().format('YYYY-MM-DD')
-
-            var template = Handlebars.compile(this.dateTimePickerTpl);
-            this.$el.find('.kt_action_option .kt_action_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
-            this.$el.find('.kt_action_option .kt_action_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
-
-            this.$el.find('.endDate').datetimepicker({
-                viewMode : 'days',
-                format : 'YYYY/MM/DD',
-                defaultDate : 'moment',
-                ignoreReadonly: true
-            }).find('input[type="text"]').attr("readonly",true)
-            this.$el.find('.startDate').datetimepicker({
-                viewMode : 'days',
-                format : 'YYYY/MM/DD',
-                defaultDate : moment().format('YYYYMM') + '01',
-                ignoreReadonly: true
-            }).find('input[type="text"]').attr("readonly",true)
-
-
-            this.getActionName();
-        },
 
         getActionName : function(){
             Model.getActionName({
@@ -167,16 +169,18 @@ define([
 
         getActionNameSuccess : function(data, textStatus, jqXHR){
 
+            if(jqXHR.status === 200 && textStatus === 'success'){
+                this.actionName = data[0];
+                this.setActionSelectbox(data);
+                this.getAction();
+            }
+            //this.actionName = this.$el.find('.kt_action_option .kt_action_name_option option:eq(0)').val();
+        },
+
+        setActionSelectbox:function(data){
             var actionNameList = _.map(data,function(value){return{'name':value}})
-
-            console.log(actionNameList)
-
-            var template = Handlebars.compile(this.actionNameListTpl);
-            this.$el.find('.kt_action_name').append(template({'actionNameList':actionNameList}));
-
-            this.actionName = this.$el.find('.kt_action_option .kt_action_name_option option:eq(0)').val();
-
-            this.getAction();
+            var template = Handlebars.compile(this.selectboxTpl);
+            this.$el.find('.kt_action_name').html(template( {'className':'kt_action_option','list':actionNameList} ));
         },
 
         getActionNameError : function(jsXHR, textStatus, errorThrown){
@@ -250,7 +254,7 @@ define([
             var template = Handlebars.compile(this.actionListTpl);
             this.$el.find('.kt_action_list').append(template({'actionList':dateUniqArr}));
 
-            this.$el.find('#actionListTable').DataTable({
+            this.$el.find('.kt_action_table table').DataTable({
                 "ordering" : false,
                 "info" : false,
                 'filter' : false,

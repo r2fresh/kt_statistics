@@ -19,6 +19,11 @@ function(Login, Main, Dashboard){
 	 * 초기 실행 함수
 	 */
 	function init(){
+
+		Handlebars.registerHelper( 'capitalize', (str) => KT.util.millisecondToTime( parseInt(str,10) ) );
+		Handlebars.registerHelper( 'numberComma', (str) => numeral( parseInt(str,10) ).format('0,0') );
+
+
 		var app, appName, hash = KT.util.parseHash();
 
 		console.log("1234")

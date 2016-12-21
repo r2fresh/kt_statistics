@@ -27,6 +27,7 @@
     "datatables": "^1.10.12",
     "font-awesome": "fontawesome#^4.7.0",
     "handlebars": "^4.0.5",
-    "c3": "^0.4.11"
+    "c3": "^0.4.11",
+    "numeral": "^2.0.2"
   }
 }

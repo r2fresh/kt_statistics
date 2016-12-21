@@ -15,9 +15,55 @@
             <tr>
                 <td>{{date}}</td>
                 <td>{{capitalize this.avgVisitTime}}</td>
-                <td>{{uniqVisits}}</td>
-                <td>{{pageViews}}</td>
-                <td>{{visits}}</td>
+                <td>{{numberComma uniqVisits}}</td>
+                <td>{{numberComma pageViews}}</td>
+                <td>{{numberComma visits}}</td>
+            </tr>
+            {{/userList}}
+        </tbody>
+    </table>
+    </script>
+
+    <script class="month_user_list_tpl" type="text/x-handlebars-template">
+    <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>월</th>
+                <th>고유방문자</th>
+                <th>페이지뷰</th>
+                <th>방문자</th>
+            </tr>
+        </thead>
+        <tbody class="day_user_list">
+            {{#userList}}
+            <tr>
+                <td>{{month}}</td>
+                <td>{{numberComma uniqVisits}}</td>
+                <td>{{numberComma pageViews}}</td>
+                <td>{{numberComma visits}}</td>
+            </tr>
+            {{/userList}}
+        </tbody>
+    </table>
+    </script>
+
+    <script class="hour_user_list_tpl" type="text/x-handlebars-template">
+    <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>시간</th>
+                <th>평균고유방문자</th>
+                <th>평균페이지뷰</th>
+                <th>평균방문자</th>
+            </tr>
+        </thead>
+        <tbody class="day_user_list">
+            {{#userList}}
+            <tr>
+                <td>{{hour}}</td>
+                <td>{{numberComma avgUniqVisits}}</td>
+                <td>{{numberComma avgPagesViews}}</td>
+                <td>{{numberComma avgVisits}}</td>
             </tr>
             {{/userList}}
         </tbody>
@@ -38,9 +84,9 @@
             {{#list.dataList}}
             <tr>
                 <td>{{date}}</td>
-                <td>{{ios}}</td>
-                <td>{{android}}</td>
-                <td>{{total}}</td>
+                <td>{{numberComma ios}}</td>
+                <td>{{numberComma android}}</td>
+                <td>{{numberComma total}}</td>
             </tr>
             {{/list.dataList}}
         </tbody>
@@ -60,8 +106,8 @@
             {{#actionList}}
             <tr>
                 <td>{{date}}</td>
-                <td>{{android}}</td>
-                <td>{{ios}}</td>
+                <td>{{numberComma android}}</td>
+                <td>{{numberComma ios}}</td>
             </tr>
             {{/actionList}}
         </tbody>
@@ -74,6 +120,15 @@
         <option value="{{name}}">{{name}}</option>
         {{/list}}
     </select>
+    </script>
+
+    <script class="kt-dateTimePicker-tpl" type="text/x-handlebars-template">
+    <div class='input-group date {{dateTimePickerId}}'>
+       <input type='text' class="form-control" style="background-color:#fff"/>
+       <span class="input-group-addon">
+           <span class="glyphicon glyphicon-calendar"></span>
+       </span>
+    </div>
     </script>
 
 </div>
