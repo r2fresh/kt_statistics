@@ -2,9 +2,10 @@ define([
    'module',
    'text!tpl/dashboard.html',
    'text!tpl/tableTemplate.html',
+   'js/utils/r2Alert',
    'js/Model'
    ],
-   function(module, Dashboard, TableTemplate, Model){
+   function(module, Dashboard, TableTemplate, R2Alert, Model){
 
 	'use strict'
 
@@ -26,11 +27,13 @@ define([
                 this.menuTableTpl       = $(TableTemplate).find('.kt-menu-table-tpl').html();
                 this.actionTableTpl     = $(TableTemplate).find('.kt-action-table-tpl').html();
                 this.selectboxTpl       = $(TableTemplate).find('.kt-selectbox-tpl').html();
-             }
+            }
+
+            R2.Loading.render('r2_loading','로딩중입니다.')
 
             this.getUser();
-            this.getMenu();
-            this.getActionName();
+            //this.getMenu();
+            //this.getActionName();
         },
         getUser:function(){
 
@@ -51,18 +54,22 @@ define([
                 this.userData = data;
                 this.setUserTable();
                 this.setUserChart();
+
+                R2.Loading.destroy('r2_loading');
             }
         },
         getUserError:function(jsXHR, textStatus, errorThrown){
             if(textStatus === 'error'){
                 switch(jsXHR.status){
                     case 403:
-                        alert('토큰이 만료 되었습니다.')
+                        alert('토큰이 만료 되었습니다.');
+                        R2.Loading.destroy('r2_loading');
                         store.remove('auth');
                         window.location.href="#login";
                     break;
                     case 0:
                         alert('에러가 발생 했습니다.');
+                        R2.Loading.destroy('r2_loading');
                         store.remove('auth');
                         window.location.href="/";
                     break;
