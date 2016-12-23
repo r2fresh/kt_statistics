@@ -1,7 +1,7 @@
 define([
    'module',
    'text!tpl/login.html',
-   'js/Model'
+   'Model'
    ],
    function(module, Login, Model){
 

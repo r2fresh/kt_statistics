@@ -1,15 +1,15 @@
 requirejs.config({
-	baseUrl: './',
+	baseUrl: '/js',
 	paths: {
-		'text':'lib/text/text',
-		'tpl':'template'
+		text:'../lib/text/text',
+		tpl:'../template'
 	}
-})
+});
 
 requirejs([
-	'js/Login',
-	'js/Main',
-	'js/Dashboard',
+	'Login',
+	'Main',
+	'Dashboard',
 ],
 function(Login, Main, Dashboard){
 
@@ -20,8 +20,13 @@ function(Login, Main, Dashboard){
 	 */
 	function init(){
 
-		Handlebars.registerHelper( 'capitalize', (str) => KT.util.millisecondToTime( parseInt(str,10) ) );
-		Handlebars.registerHelper( 'numberComma', (str) => numeral( parseInt(str,10) ).format('0,0') );
+		Handlebars.registerHelper( 'capitalize', function(str){
+			return KT.util.millisecondToTime( parseInt(str,10) )
+		});
+
+		Handlebars.registerHelper( 'numberComma', function(str){
+			return numeral( parseInt(str,10) ).format('0,0')
+		});
 
 
 		var app, appName, hash = KT.util.parseHash();
@@ -72,8 +77,8 @@ function(Login, Main, Dashboard){
 			prevView.hide();
 		}
 
-		let mainMenu = guideType;
-		let subMenu = main;
+		var mainMenu = guideType;
+		var subMenu = main;
 
 		switch(mainMenu){
 			case 'login' :

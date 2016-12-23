@@ -2,9 +2,10 @@ define([
    'module',
    'text!tpl/action.html',
    'text!tpl/tableTemplate.html',
-   'js/Model'
+   'utils/r2Loading',
+   'Model'
    ],
-   function(module, Action, TableTemplate, Model){
+   function(module, Action, TableTemplate, R2Loading, Model){
 
 	'use strict'
 
@@ -119,11 +120,11 @@ define([
 
             console.log(this.actionData)
 
-            let chartData = null;
+            var chartData = null;
 
-            let ios = (['ios']).concat(_.pluck(this.actionData,'ios'));
-            let android = (['android']).concat(_.pluck(this.actionData,'android'));
-            let dateArr = (['x']).concat(_.pluck(this.actionData,'date'));
+            var ios = (['ios']).concat(_.pluck(this.actionData,'ios'));
+            var android = (['android']).concat(_.pluck(this.actionData,'android'));
+            var dateArr = (['x']).concat(_.pluck(this.actionData,'date'));
 
             chartData = [dateArr, ios, android]
 
@@ -161,6 +162,9 @@ define([
 
 
         getActionName : function(){
+
+            R2Loading.render({'msg':'서비스별 카테고리 데이터를\n불러오는 중입니다.','w':300})
+
             Model.getActionName({
                 'success' : Function.prototype.bind.call(this.getActionNameSuccess,this),
                 'error' : Function.prototype.bind.call(this.getActionNameError,this)
@@ -168,6 +172,8 @@ define([
         },
 
         getActionNameSuccess : function(data, textStatus, jqXHR){
+
+            R2Loading.allDestroy();
 
             if(jqXHR.status === 200 && textStatus === 'success'){
                 this.actionName = data[0];
@@ -184,6 +190,9 @@ define([
         },
 
         getActionNameError : function(jsXHR, textStatus, errorThrown){
+
+            R2Loading.allDestroy();
+
             if(textStatus === 'error'){
 
                 if(jsXHR.status === 403) {
@@ -196,6 +205,9 @@ define([
         },
 
         getAction : function(){
+
+            R2Loading.render({'msg':'서비스별 데이터를\n불러오는 중입니다.','w':300})
+
             Model.getAction({
                 'fromDate' : this.startDate,
                 'toDate' : this.endDate,
@@ -206,7 +218,9 @@ define([
         },
         getActionSuccess : function(data, textStatus, jqXHR){
 
-            let propsChange = _.map(data,function(value, key){
+            R2Loading.allDestroy();
+
+            var propsChange = _.map(data,function(value, key){
                 value[value.os] = value.actions
                 return _.omit(value,'actions')
             })
@@ -281,9 +295,9 @@ define([
 
         },
         getActionError : function(jsXHR, textStatus, errorThrown){
-            console.log(jsXHR)
-            console.log(textStatus)
-            console.log(errorThrown)
+
+            R2Loading.allDestroy();
+
             if(textStatus === 'error'){
 
                 if(jsXHR.status === 403) {

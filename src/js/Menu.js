@@ -2,10 +2,10 @@ define([
    'module',
    'text!tpl/menu.html',
    'text!tpl/tableTemplate.html',
-   'js/Model',
-   'data/menu.js'
+   'utils/r2Loading',
+   'Model'
    ],
-   function(module, Menu, TableTemplate, Model, MenuData){
+   function(module, Menu, TableTemplate, R2Loading, Model){
 
 	'use strict'
 
@@ -103,6 +103,9 @@ define([
 
 
         onSearchHanlder:function(e){
+
+            R2Loading.render({'msg':'메뉴별 데이터를\n불러오는 중입니다.','w':300})
+
             this.getMenu();
         },
 
@@ -115,7 +118,7 @@ define([
             this.$el.find('.kt_menu_option .kt_menu_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
             this.$el.find('.kt_menu_option .kt_menu_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
 
-            let dateTimePickerOption = {
+            var dateTimePickerOption = {
                 viewMode : 'days',
                 format : 'YYYY-MM-DD',
                 ignoreReadonly: true
@@ -128,7 +131,7 @@ define([
         * 검색 시작 일 가져오기
         */
         getStartDate:function(){
-            let date = this.$el.find('.kt_menu_option .startDate input').val();
+            var date = this.$el.find('.kt_menu_option .startDate input').val();
             return ( date === '' ) ? moment().format('YYYY-MM-') + '01' : date;
         },
 
@@ -136,7 +139,7 @@ define([
         * 검색 끝 일 가져오기
         */
         getEndDate:function(){
-            let date = this.$el.find('.kt_menu_option .endDate input').val();
+            var date = this.$el.find('.kt_menu_option .endDate input').val();
             return ( date === '' ) ? moment().format('YYYY-MM-DD') : date;
         },
 
@@ -169,6 +172,8 @@ define([
             // })
         },
         getMenuSuccess:function(data, textStatus, jqXHR){
+
+            R2Loading.allDestroy();
 
             console.log(data);
 
@@ -211,6 +216,9 @@ define([
 
         },
         getMenuError:function(jsXHR, textStatus, errorThrown){
+
+            R2Loading.allDestroy();
+
             console.log(jsXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -279,11 +287,11 @@ define([
 
             console.log(this.menuData[this.areaIndex].menuList[this.menuIndex])
 
-            let chartData = null;
+            var chartData = null;
 
-            let ios = (['ios']).concat(_.pluck(this.menuData[this.areaIndex].menuList[this.menuIndex].dataList,'ios'));
-            let android = (['android']).concat(_.pluck(this.menuData[this.areaIndex].menuList[this.menuIndex].dataList,'android'));
-            let dateArr = (['x']).concat(_.pluck(this.menuData[this.areaIndex].menuList[this.menuIndex].dataList,'date'));
+            var ios = (['ios']).concat(_.pluck(this.menuData[this.areaIndex].menuList[this.menuIndex].dataList,'ios'));
+            var android = (['android']).concat(_.pluck(this.menuData[this.areaIndex].menuList[this.menuIndex].dataList,'android'));
+            var dateArr = (['x']).concat(_.pluck(this.menuData[this.areaIndex].menuList[this.menuIndex].dataList,'date'));
 
             chartData = [dateArr, ios, android]
 

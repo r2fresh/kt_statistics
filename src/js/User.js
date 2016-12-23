@@ -2,9 +2,10 @@ define([
    'module',
    'text!tpl/user.html',
    'text!tpl/tableTemplate.html',
-   'js/Model'
+   'utils/r2Loading',
+   'Model'
    ],
-   function(module, User, TableTemplate, Model){
+   function(module, User, TableTemplate, R2Loading, Model){
 
 	'use strict'
 
@@ -71,6 +72,9 @@ define([
         },
 
         getUser:function(){
+
+            R2Loading.render({'msg':'방문자별 데이터를\n불러오는 중입니다.','w':300})
+
             Model.getUser({
                 'pathDateOption' : this.pathDateOption,
                 'fromDate' : this.startDate,
@@ -83,7 +87,7 @@ define([
 
         getUserSuccess:function(data, textStatus, jqXHR){
 
-
+            R2Loading.allDestroy();
 
             if(this.pathDateOption === 'daily') {
                 this.userData = data;
@@ -119,6 +123,9 @@ define([
 
         },
         getUserError:function(jsXHR, textStatus, errorThrown){
+
+            R2Loading.allDestroy();
+
             if(textStatus === 'error'){
                 if(jsXHR.status === 403) {
                     alert('토큰이 만료 되었습니다.')
@@ -204,28 +211,28 @@ define([
 
             console.log(this.userData)
 
-            let chartData = null;
+            var chartData = null;
 
             if(this.pathDateOption === 'daily'){
-                let uniqVists = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
-                let pageViews = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
-                let visits = (['방문자']).concat(_.pluck(this.userData,'visits'))
-                let dateArr = (['x']).concat(_.pluck(this.userData,'date'))
+                var uniqVists = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
+                var pageViews = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
+                var visits = (['방문자']).concat(_.pluck(this.userData,'visits'))
+                var dateArr = (['x']).concat(_.pluck(this.userData,'date'))
 
                 console.log(dateArr)
                 chartData = [dateArr, uniqVists, pageViews, visits]
             } else if(this.pathDateOption === 'monthly') {
-                let uniqVists = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
-                let pageViews = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
-                let visits = (['방문자']).concat(_.pluck(this.userData,'visits'))
-                let dateArr = (['x']).concat(_.pluck(this.userData,'month'))
+                var uniqVists = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
+                var pageViews = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
+                var visits = (['방문자']).concat(_.pluck(this.userData,'visits'))
+                var dateArr = (['x']).concat(_.pluck(this.userData,'month'))
 
                 chartData = [dateArr, uniqVists, pageViews, visits]
             } else if(this.pathDateOption === 'hourly') {
-                let avgPagesViews = (['평균페이지뷰']).concat(_.pluck(this.userData,'avgPagesViews'))
-                let avgUniqVisits = (['평균고유방문자']).concat(_.pluck(this.userData,'avgUniqVisits'))
-                let avgVisits = (['평균방문자']).concat(_.pluck(this.userData,'avgVisits'))
-                let dateArr = (['x']).concat(_.pluck(this.userData,'hour'))
+                var avgPagesViews = (['평균페이지뷰']).concat(_.pluck(this.userData,'avgPagesViews'))
+                var avgUniqVisits = (['평균고유방문자']).concat(_.pluck(this.userData,'avgUniqVisits'))
+                var avgVisits = (['평균방문자']).concat(_.pluck(this.userData,'avgVisits'))
+                var dateArr = (['x']).concat(_.pluck(this.userData,'hour'))
 
                 chartData = [dateArr, avgPagesViews, avgUniqVisits, avgVisits]
             }

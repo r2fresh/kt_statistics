@@ -1,9 +1,9 @@
 define([
    'module',
    'text!tpl/main.html',
-   'js/Dashboard',
-   'js/TopMenu',
-   'js/Sub'
+   'Dashboard',
+   'TopMenu',
+   'Sub'
    ],
    function(module, Main, Dashboard, TopMenu, Sub){
 

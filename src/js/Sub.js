@@ -1,10 +1,10 @@
 define([
    'module',
    'text!tpl/sub.html',
-   'js/LeftMenu',
-   'js/User',
-   'js/Menu',
-   'js/Action'
+   'LeftMenu',
+   'User',
+   'Menu',
+   'Action'
    ],
    function(module, Sub, LeftMenu, User, Menu, Action){
 

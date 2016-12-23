@@ -24,7 +24,7 @@ define([
 
         },
         setUserName:function(){
-            let username = store.get('auth').username;
+            var username = store.get('auth').username;
             this.$el.find('.kt_info_username strong').text(username);
         },
         onLogout:function(e){

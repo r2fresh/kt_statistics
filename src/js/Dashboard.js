@@ -2,10 +2,11 @@ define([
    'module',
    'text!tpl/dashboard.html',
    'text!tpl/tableTemplate.html',
-   'js/utils/r2Alert',
-   'js/Model'
+   'utils/r2Alert',
+   'utils/r2Loading',
+   'Model'
    ],
-   function(module, Dashboard, TableTemplate, R2Alert, Model){
+   function(module, Dashboard, TableTemplate, R2Alert, R2Loading, Model){
 
 	'use strict'
 
@@ -29,13 +30,11 @@ define([
                 this.selectboxTpl       = $(TableTemplate).find('.kt-selectbox-tpl').html();
             }
 
-            R2.Loading.render('r2_loading','로딩중입니다.')
-
             this.getUser();
-            //this.getMenu();
-            //this.getActionName();
         },
         getUser:function(){
+
+            R2Loading.render({'msg':'방문자별 데이터를\n불러오는 중입니다.','w':300})
 
             var toDate   = moment().format('YYYY-MM-DD');
             var duration = moment.duration(1,'week');
@@ -50,15 +49,21 @@ define([
             })
         },
         getUserSuccess:function(data, textStatus, jqXHR){
+
+            R2Loading.allDestroy();
+
             if(jqXHR.status === 200 && textStatus === 'success'){
                 this.userData = data;
                 this.setUserTable();
                 this.setUserChart();
 
-                R2.Loading.destroy('r2_loading');
+                this.getMenu();
             }
         },
         getUserError:function(jsXHR, textStatus, errorThrown){
+
+            R2Loading.allDestroy();
+
             if(textStatus === 'error'){
                 switch(jsXHR.status){
                     case 403:
@@ -78,17 +83,16 @@ define([
         },
 
         setUserTable:function(){
-            Handlebars.registerHelper( 'capitalize', (str) => KT.util.millisecondToTime( parseInt(str,10) ) );
             var template = Handlebars.compile(this.dayUserListTpl);
             this.$el.find('.kt-dashboard-user .user-table').html(template({'userList':this.userData}));
         },
         setUserChart:function(){
-            let chartData = null;
+            var chartData = null;
 
-            let uniqVists = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
-            let pageViews = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
-            let visits = (['방문자']).concat(_.pluck(this.userData,'visits'))
-            let dateArr = (['x']).concat(_.pluck(this.userData,'date'))
+            var uniqVists = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
+            var pageViews = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
+            var visits = (['방문자']).concat(_.pluck(this.userData,'visits'))
+            var dateArr = (['x']).concat(_.pluck(this.userData,'date'))
 
             chartData = [dateArr, uniqVists, pageViews, visits]
 
@@ -106,6 +110,9 @@ define([
             });
         },
         getMenu:function(){
+
+            R2Loading.render({'msg':'메뉴별 데이터를\n불러오는 중입니다.','w':300})
+
             var toDate   = moment().format('YYYY-MM-DD');
             var duration = moment.duration(1,'week');
             var fromDate = ( (moment()).subtract(duration) ).format('YYYY-MM-DD')
@@ -118,6 +125,9 @@ define([
             })
         },
         getMenuSuccess:function(data, textStatus, jqXHR){
+
+            R2Loading.allDestroy();
+
             if(jqXHR.status === 200 && textStatus === 'success'){
                 this.menuData = data.list;
                 this.areaIndex = 0;
@@ -130,10 +140,15 @@ define([
                 this.setMenuSelectBox()
                 this.setMenuTable();
                 this.setMenuChart();
+
+                this.getActionName();
             }
 
         },
         getMenuError:function(jsXHR, textStatus, errorThrown){
+
+            R2Loading.allDestroy();
+
             if(textStatus === 'error'){
                 switch(jsXHR.status){
                     case 403:
@@ -147,7 +162,7 @@ define([
                         window.location.href="/";
                     break;
                 }
-            }kt-menu-selectbox-tpl
+            }
 
         },
 
@@ -207,12 +222,12 @@ define([
         },
 
         setMenuChart:function(){
-            let chartData = null;
+            var chartData = null;
 
-            let ios = (['ios']).concat(_.pluck(this.selectMenuData.dataList,'ios'));
-            let android = (['android']).concat(_.pluck(this.selectMenuData.dataList,'android'));
-            let total = (['total']).concat(_.pluck(this.selectMenuData.dataList,'total'));
-            let dateArr = (['x']).concat(_.pluck(this.selectMenuData.dataList,'date'));
+            var ios = (['ios']).concat(_.pluck(this.selectMenuData.dataList,'ios'));
+            var android = (['android']).concat(_.pluck(this.selectMenuData.dataList,'android'));
+            var total = (['total']).concat(_.pluck(this.selectMenuData.dataList,'total'));
+            var dateArr = (['x']).concat(_.pluck(this.selectMenuData.dataList,'date'));
 
             chartData = [dateArr, ios, android, total]
 
@@ -231,19 +246,29 @@ define([
         },
 
         getActionName : function(){
+
+            R2Loading.render({'msg':'서비스별 카테고리 데이터\n불러오는 중입니다.','w':300})
+
             Model.getActionName({
                 'success' : Function.prototype.bind.call(this.getActionNameSuccess,this),
                 'error' : Function.prototype.bind.call(this.getActionNameError,this)
             })
         },
         getActionNameSuccess : function(data, textStatus, jqXHR){
+
+            R2Loading.allDestroy();
+
             if(jqXHR.status === 200 && textStatus === 'success'){
                 this.actionName = data[0];
                 this.setActionSelectbox(data);
+
                 this.getAction();
             }
         },
         getActionNameError : function(jsXHR, textStatus, errorThrown){
+
+            R2Loading.allDestroy();
+
             if(textStatus === 'error'){
                 switch(jsXHR.status){
                     case 403:
@@ -266,6 +291,8 @@ define([
         },
         getAction:function(){
 
+            R2Loading.render({'msg':'서비스별 데이터를\n불러오는 중입니다.','w':300})
+
             var toDate   = moment().format('YYYY-MM-DD');
             var duration = moment.duration(1,'week');
             var fromDate = ( (moment()).subtract(duration) ).format('YYYY-MM-DD');
@@ -280,12 +307,18 @@ define([
         },
 
         getActionSuccess : function(data, textStatus, jqXHR){
+
+            R2Loading.allDestroy();
+
             if(jqXHR.status === 200 && textStatus === 'success'){
                 this.setActionData(data);
             }
         },
 
         getActionError : function(jsXHR, textStatus, errorThrown){
+
+            R2Loading.allDestroy();
+
             if(textStatus === 'error'){
                 switch(jsXHR.status){
                     case 403:
@@ -303,7 +336,7 @@ define([
         },
 
         setActionData : function(data){
-            let propsChange = _.map(data,function(value, key){
+            var propsChange = _.map(data,function(value, key){
                 value[value.os] = value.actions
                 return _.omit(value,'actions')
             })
@@ -348,11 +381,11 @@ define([
             this.$el.find('.kt-dashboard-action .action-table').html(template({'actionList':this.actionData}));
         },
         setActionChart:function(){
-            let chartData = null;
+            var chartData = null;
 
-            let ios = (['ios']).concat(_.pluck(this.actionData,'ios'));
-            let android = (['android']).concat(_.pluck(this.actionData,'android'));
-            let dateArr = (['x']).concat(_.pluck(this.actionData,'date'));
+            var ios = (['ios']).concat(_.pluck(this.actionData,'ios'));
+            var android = (['android']).concat(_.pluck(this.actionData,'android'));
+            var dateArr = (['x']).concat(_.pluck(this.actionData,'date'));
 
             chartData = [dateArr, ios, android]
 
