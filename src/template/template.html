@@ -1,4 +1,5 @@
 <div>
+    <!-- 방문자별 테이블 일별 템플릿-->
     <script class="day-user-list-tpl" type="text/x-handlebars-template">
     <table class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
@@ -13,17 +14,18 @@
         <tbody class="day_user_list">
             {{#userList}}
             <tr>
-                <td>{{date}}</td>
-                <td>{{capitalize this.avgVisitTime}}</td>
-                <td>{{numberComma uniqVisits}}</td>
-                <td>{{numberComma pageViews}}</td>
-                <td>{{numberComma visits}}</td>
+                <td class="kt-date">{{date}}</td>
+                <td class="kt-date">{{capitalize this.avgVisitTime}}</td>
+                <td class="kt-count-comma">{{numberComma uniqVisits}}</td>
+                <td class="kt-count-comma">{{numberComma pageViews}}</td>
+                <td class="kt-count-comma">{{numberComma visits}}</td>
             </tr>
             {{/userList}}
         </tbody>
     </table>
     </script>
 
+    <!-- 방문자별 테이블 월별 템플릿-->
     <script class="month_user_list_tpl" type="text/x-handlebars-template">
     <table class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
@@ -37,16 +39,17 @@
         <tbody class="day_user_list">
             {{#userList}}
             <tr>
-                <td>{{month}}</td>
-                <td>{{numberComma uniqVisits}}</td>
-                <td>{{numberComma pageViews}}</td>
-                <td>{{numberComma visits}}</td>
+                <td class="kt-date">{{month}}</td>
+                <td class="kt-count-comma">{{numberComma uniqVisits}}</td>
+                <td class="kt-count-comma">{{numberComma pageViews}}</td>
+                <td class="kt-count-comma">{{numberComma visits}}</td>
             </tr>
             {{/userList}}
         </tbody>
     </table>
     </script>
 
+    <!-- 방문자별 테이블 시간별 템플릿-->
     <script class="hour_user_list_tpl" type="text/x-handlebars-template">
     <table class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
@@ -60,16 +63,17 @@
         <tbody class="day_user_list">
             {{#userList}}
             <tr>
-                <td>{{hour}}</td>
-                <td>{{numberComma avgUniqVisits}}</td>
-                <td>{{numberComma avgPagesViews}}</td>
-                <td>{{numberComma avgVisits}}</td>
+                <td class="kt-date">{{hour}}</td>
+                <td class="kt-count-comma">{{numberComma avgUniqVisits}}</td>
+                <td class="kt-count-comma">{{numberComma avgPagesViews}}</td>
+                <td class="kt-count-comma">{{numberComma avgVisits}}</td>
             </tr>
             {{/userList}}
         </tbody>
     </table>
     </script>
 
+    <!-- 메뉴별 테이블 템플릿-->
     <script class="kt-menu-table-tpl" type="text/x-handlebars-template">
     <table class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
@@ -83,16 +87,17 @@
         <tbody>
             {{#list.dataList}}
             <tr>
-                <td>{{date}}</td>
-                <td>{{numberComma ios}}</td>
-                <td>{{numberComma android}}</td>
-                <td>{{numberComma total}}</td>
+                <td class="kt-date">{{date}}</td>
+                <td class="kt-count-comma">{{numberComma ios}}</td>
+                <td class="kt-count-comma">{{numberComma android}}</td>
+                <td class="kt-count-comma">{{numberComma total}}</td>
             </tr>
             {{/list.dataList}}
         </tbody>
     </table>
     </script>
 
+    <!-- 서비스별 테이블 템플릿-->
     <script class="kt-action-table-tpl" type="text/x-handlebars-template">
     <table class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
@@ -105,15 +110,16 @@
         <tbody>
             {{#actionList}}
             <tr>
-                <td>{{date}}</td>
-                <td>{{numberComma android}}</td>
-                <td>{{numberComma ios}}</td>
+                <td class="kt-date">{{date}}</td>
+                <td class="kt-count-comma">{{numberComma android}}</td>
+                <td class="kt-count-comma">{{numberComma ios}}</td>
             </tr>
             {{/actionList}}
         </tbody>
     </table>
     </script>
 
+    <!-- 셀렉트 박스-->
     <script class="kt-selectbox-tpl" type="text/x-handlebars-template">
     <select class="form-control {{className}}">
         {{#list}}
@@ -122,6 +128,7 @@
     </select>
     </script>
 
+    <!-- 켈린더 템플릿-->
     <script class="kt-dateTimePicker-tpl" type="text/x-handlebars-template">
     <div class='input-group date {{dateTimePickerId}}'>
        <input type='text' class="form-control" style="background-color:#fff"/>

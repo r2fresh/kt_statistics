@@ -1,11 +1,11 @@
 define([
    'module',
    'text!tpl/user.html',
-   'text!tpl/tableTemplate.html',
+   'text!tpl/template.html',
    'utils/r2Loading',
    'Model'
    ],
-   function(module, User, TableTemplate, R2Loading, Model){
+   function(module, User, Template, R2Loading, Model){
 
 	'use strict'
 
@@ -35,10 +35,10 @@ define([
             if(this.$el.children().length === 0){
                 this.$el.html(User);
 
-                this.dayUserListTpl     = $(TableTemplate).find('.day-user-list-tpl').html();
-                this.hourUserListTpl    = $(TableTemplate).find('.hour_user_list_tpl').html();
-                this.monthUserListTpl   = $(TableTemplate).find('.month_user_list_tpl').html();
-                this.dateTimePickerTpl  = $(TableTemplate).find('.kt-dateTimePicker-tpl').html();
+                this.dayUserListTpl     = $(Template).find('.day-user-list-tpl').html();
+                this.hourUserListTpl    = $(Template).find('.hour_user_list_tpl').html();
+                this.monthUserListTpl   = $(Template).find('.month_user_list_tpl').html();
+                this.dateTimePickerTpl  = $(Template).find('.kt-dateTimePicker-tpl').html();
 
                 this.$el.find('.kt_user_list').empty()
             }
@@ -104,11 +104,11 @@ define([
             }
 
             this.$el.find('.kt_user_list table').DataTable({
-                "ordering" : false,
-                "info" : false,
+                'ordering' : true,
+                'info' : false,
                 'filter' : false,
                 'lengthChange' : false,
-
+                'order' : [[ 0, 'desc' ]],
                 'language': {
                     paginate: {
                         first:    '<i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음',

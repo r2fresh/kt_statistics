@@ -1,11 +1,11 @@
 define([
    'module',
    'text!tpl/menu.html',
-   'text!tpl/tableTemplate.html',
+   'text!tpl/template.html',
    'utils/r2Loading',
    'Model'
    ],
-   function(module, Menu, TableTemplate, R2Loading, Model){
+   function(module, Menu, Template, R2Loading, Model){
 
 	'use strict'
 
@@ -40,9 +40,9 @@ define([
             if(this.$el.children().length === 0){
                 this.$el.html(Menu);
 
-                this.selectboxTpl       = $(TableTemplate).find('.kt-selectbox-tpl').html();
-                this.menuTableTpl       = $(TableTemplate).find('.kt-menu-table-tpl').html();
-                this.dateTimePickerTpl  = $(TableTemplate).find('.kt-dateTimePicker-tpl').html();
+                this.selectboxTpl       = $(Template).find('.kt-selectbox-tpl').html();
+                this.menuTableTpl       = $(Template).find('.kt-menu-table-tpl').html();
+                this.dateTimePickerTpl  = $(Template).find('.kt-dateTimePicker-tpl').html();
             }
 
             this.$el.find('#example').DataTable({
@@ -353,10 +353,11 @@ define([
             this.$el.find('.kt_menu_list').html(template( {'list':obj} ));
 
             this.$el.find('.kt_menu_table table').DataTable({
-                "ordering" : false,
+                "ordering" : true,
                 "info" : false,
                 'filter' : false,
                 'lengthChange' : false,
+                'order' : [[ 0, 'desc' ]],
                 'language': {
                     paginate: {
                         first:    '<i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음',

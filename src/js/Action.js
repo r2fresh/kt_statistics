@@ -1,11 +1,11 @@
 define([
    'module',
    'text!tpl/action.html',
-   'text!tpl/tableTemplate.html',
+   'text!tpl/template.html',
    'utils/r2Loading',
    'Model'
    ],
-   function(module, Action, TableTemplate, R2Loading, Model){
+   function(module, Action, Template, R2Loading, Model){
 
 	'use strict'
 
@@ -32,9 +32,9 @@ define([
             if(this.$el.children().length === 0){
                 this.$el.html(Action);
 
-                this.selectboxTpl       = $(TableTemplate).find('.kt-selectbox-tpl').html();
-                this.actionListTpl      = $(TableTemplate).find('.kt-action-table-tpl').html();
-                this.dateTimePickerTpl  = $(TableTemplate).find('.kt-dateTimePicker-tpl').html();
+                this.selectboxTpl       = $(Template).find('.kt-selectbox-tpl').html();
+                this.actionListTpl      = $(Template).find('.kt-action-table-tpl').html();
+                this.dateTimePickerTpl  = $(Template).find('.kt-dateTimePicker-tpl').html();
 
             }
 
@@ -269,10 +269,11 @@ define([
             this.$el.find('.kt_action_list').append(template({'actionList':dateUniqArr}));
 
             this.$el.find('.kt_action_table table').DataTable({
-                "ordering" : false,
+                "ordering" : true,
                 "info" : false,
                 'filter' : false,
                 'lengthChange' : false,
+                'order' : [[ 0, 'desc' ]],
                 'language': {
                     paginate: {
                         first:    '<i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음',

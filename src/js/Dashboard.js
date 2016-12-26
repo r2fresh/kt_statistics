@@ -1,12 +1,12 @@
 define([
    'module',
    'text!tpl/dashboard.html',
-   'text!tpl/tableTemplate.html',
+   'text!tpl/template.html',
    'utils/r2Alert',
    'utils/r2Loading',
    'Model'
    ],
-   function(module, Dashboard, TableTemplate, R2Alert, R2Loading, Model){
+   function(module, Dashboard, Template, R2Alert, R2Loading, Model){
 
 	'use strict'
 
@@ -24,10 +24,10 @@ define([
             if(this.$el.children().length === 0){
                 this.$el.html(Dashboard);
 
-                this.dayUserListTpl     = $(TableTemplate).find('.day-user-list-tpl').html();
-                this.menuTableTpl       = $(TableTemplate).find('.kt-menu-table-tpl').html();
-                this.actionTableTpl     = $(TableTemplate).find('.kt-action-table-tpl').html();
-                this.selectboxTpl       = $(TableTemplate).find('.kt-selectbox-tpl').html();
+                this.dayUserListTpl     = $(Template).find('.day-user-list-tpl').html();
+                this.menuTableTpl       = $(Template).find('.kt-menu-table-tpl').html();
+                this.actionTableTpl     = $(Template).find('.kt-action-table-tpl').html();
+                this.selectboxTpl       = $(Template).find('.kt-selectbox-tpl').html();
             }
 
             this.getUser();

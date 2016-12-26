@@ -64,6 +64,16 @@ body {
     padding:1px 0px;
 }
 
+.table th {
+    text-align:center;
+}
+.table td.kt-count-comma {
+    text-align:right;
+}
+.table td.kt-date {
+    text-align:center;
+}
+
 @media (min-width: 992px){
     .kt-dashboard-user .user-table,
     .kt-dashboard-menu .menu-table,
