@@ -9,8 +9,6 @@ app.get('/',function(req, res){
 
 app.use(express.static('src'));
 
-
-
 var getFunc = function(req, res) {
 
     console.log(req.headers['x-auth-token'])

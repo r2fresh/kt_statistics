@@ -38,11 +38,7 @@ define([
                 store.set('auth',data);
             }
 
-            window.location.href = "/";
-
-            console.log(data);
-            console.log(textStatus);
-            console.log(jqXHR)
+            window.location.href = "#";
         },
         postLoginError:function(jsXHR, textStatus, errorThrown){
 
