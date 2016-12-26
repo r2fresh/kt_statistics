@@ -45,11 +45,6 @@ gulp.task('lib-min', function() {
         'src/lib/numeral/numeral.js',
         'src/lib/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js',
         'src/lib/store-js/store.js',
-        'src/lib/handlebars/handlebars.js',
-        'src/lib/spin.js/spin.js',
-        'src/lib/spin.js/jquery.spin.js',
-        'src/lib/d3/d3.js',
-        'src/lib/c3/c3.js',
         'src/js/utils/r2Common.js',
         'src/js/utils/common.js',
     ])

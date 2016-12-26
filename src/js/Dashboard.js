@@ -4,9 +4,11 @@ define([
    'text!tpl/template.html',
    'utils/r2Alert',
    'utils/r2Loading',
-   'Model'
+   'Model',
+   'Handlebars',
+   'c3'
    ],
-   function(module, Dashboard, Template, R2Alert, R2Loading, Model){
+   function(module, Dashboard, Template, R2Alert, R2Loading, Model, Handlebars, c3){
 
 	'use strict'
 

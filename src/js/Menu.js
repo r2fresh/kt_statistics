@@ -3,9 +3,11 @@ define([
    'text!tpl/menu.html',
    'text!tpl/template.html',
    'utils/r2Loading',
-   'Model'
+   'Model',
+   'Handlebars',
+   'c3'
    ],
-   function(module, Menu, Template, R2Loading, Model){
+   function(module, Menu, Template, R2Loading, Model, Handlebars, c3){
 
 	'use strict'
 
