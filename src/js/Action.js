@@ -5,9 +5,12 @@ define([
    'utils/r2Loading',
    'Model',
    'Handlebars',
-   'c3'
+   'c3',
+   'store',
+   'moment',
+   'datetimepicker'
    ],
-   function(module, Action, Template, R2Loading, Model, Handlebars, c3){
+   function(module, Action, Template, R2Loading, Model, Handlebars, c3, store, moment, datetimepicker){
 
 	'use strict'
 

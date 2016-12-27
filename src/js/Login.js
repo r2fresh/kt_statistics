@@ -1,53 +1,65 @@
 define([
    'module',
    'text!tpl/login.html',
-   'Model'
+   'Model',
+   'store',
+   'utils/r2Loading',
    ],
-   function(module, Login, Model){
+   function(module, Login, Model, store, R2Loading){
 
 	'use strict'
  	module.exports = new (Backbone.View.extend({
  		el: '.login',
         events :{
-            'click #kt_login_submit' : 'onSubmit',
+            'click #kt_login_submit' : 'onSubmit'
  		},
         render:function(){
             this.$el.html(Login);
+            this.$id = this.$el.find('#kt_login_insert_id')
+            this.$pwd = this.$el.find('#kt_login_pwd')
         },
         onSubmit:function(e){
 
-            var id = this.$el.find('#kt_login_insert_id').val();
-            var pwd = this.$el.find('#kt_login_pwd').val();
-
             e.preventDefault();
 
-            Model.postLogin({
-                url: KT.LOGIN_HOST + '/user/login',
-                method : 'POST',
-                data : JSON.stringify({'username':id,'password':pwd}),
-                dataType : 'json',
-                contentType:"application/json; charset=UTF-8",
-                success : Function.prototype.bind.call(this.postLoginSuccess,this),
-                error : Function.prototype.bind.call(this.postLoginError,this)
-            })
+            var id = this.$id.val()
+            ,pwd = this.$pwd.val()
 
+            if(id === ''){alert('ID를 입력해 주시기 바랍니다.');this.$id.focus();return;};
+            if(pwd === ''){alert('비밀번호를 입력해 주시기 바랍니다.');this.$pwd.focus();return;};
+
+            R2Loading.render({'msg':'로그인중입니다.','w':300})
+
+            Model.postLogin({
+                'id' : id,
+                'pwd' : pwd,
+                'success' : Function.prototype.bind.call(this.postLoginSuccess,this),
+                'error' : Function.prototype.bind.call(this.postLoginError,this)
+            })
         },
         postLoginSuccess:function(data, textStatus, jqXHR){
 
-            if(textStatus === 'success'){
-                store.set('auth',data);
-            }
+            R2Loading.allDestroy();
 
-            window.location.href = "#";
+            if(jqXHR.status === 200 && textStatus === 'success'){
+                store.set('auth',data);
+                window.location.href = "#";
+            }
         },
         postLoginError:function(jsXHR, textStatus, errorThrown){
 
+            R2Loading.allDestroy();
+
+            if(textStatus === 'error'){
+                alert('에러가 발생 했습니다.');
+            }
         },
         hide : function(){
             this.$el.addClass('displayNone');
         },
         show : function(){
             this.$el.removeClass('displayNone');
+            this.$id.focus()
         }
  	}))
 

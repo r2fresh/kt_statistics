@@ -1,8 +1,9 @@
 define([
  	'module',
- 	'text!tpl/r2_loading.html'
+ 	'text!tpl/r2_loading.html',
+    'backbone'
  	],
- 	function(module, R2_Loading){
+ 	function(module, R2_Loading, Backbone){
 
         'use strict'
 
@@ -17,7 +18,7 @@ define([
      		},
             render:function(obj){
                 this.className = 'r2_loading';
-                
+
                 if(obj.callback){
                     this.callback = obj.callback;
                 }

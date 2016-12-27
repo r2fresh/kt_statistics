@@ -1,8 +1,9 @@
 define([
    'module',
    'text!tpl/leftMenu.html',
+   'backbone'
    ],
-   function(module, LeftMenu){
+   function(module, LeftMenu, Backbone){
 
 	'use strict'
 

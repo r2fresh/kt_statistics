@@ -1,18 +1,24 @@
-var gulp = require('gulp');
-var uglify = require('gulp-uglify');
-var rjs = require('gulp-requirejs');
-var gutil = require('gulp-util');
-var rename = require('gulp-rename');
-var concat = require('gulp-concat');
-var minifyCSS = require('gulp-minify-css');
-var autoprefixer = require('gulp-autoprefixer');
-var clean = require('gulp-clean');
+var gulp = require('gulp')
+, uglify = require('gulp-uglify')
+, rjs = require('gulp-requirejs')
+, gutil = require('gulp-util')
+, rename = require('gulp-rename')
+, concat = require('gulp-concat')
+, minifyCSS = require('gulp-minify-css')
+, clean = require('gulp-clean')
+, sourcemaps = require('gulp-sourcemaps')
 
+/**
+* dist 폴더 지우기
+*/
 gulp.task('dist-clean', function () {
     return gulp.src('src/dist', {read: false})
         .pipe(clean());
 });
 
+/**
+* require를 통한 js파일 minify와 uglify 작업
+*/
 gulp.task('requirejs-build',function(){
     return rjs({
         name:'App',
@@ -25,35 +31,21 @@ gulp.task('requirejs-build',function(){
     .pipe(gulp.dest('src/dist/js'));
 });
 
+/**
+* require를 통한 js파일 minify와 uglify 작업
+*/
 gulp.task('require-min',function(){
     return gulp.src('src/lib/requirejs/require.js')
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(sourcemaps.write())
     .pipe(uglify())
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest('src/dist/js'));
 });
 
-gulp.task('lib-min', function() {
-    return gulp.src([
-        'src/lib/jquery/dist/jquery.js',
-        'src/lib/bootstrap/dist/js/bootstrap.js',
-        'src/lib/datatables/media/js/jquery.dataTables.js',
-        'src/lib/datatables/media/js/dataTables.bootstrap.js',
-        'src/lib/underscore/underscore.js',
-        'src/lib/backbone/backbone.js',
-        'src/lib/moment/moment.js',
-        'src/lib/moment/locale/ko.js',
-        'src/lib/numeral/numeral.js',
-        'src/lib/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js',
-        'src/lib/store-js/store.js',
-        'src/js/utils/r2Common.js',
-        'src/js/utils/common.js',
-    ])
-    .pipe(concat('library.js'))
-    .on('error', gutil.log)
-    .pipe(uglify())
-    .pipe(gulp.dest('src/dist/js'));
-});
-
+/**
+* css 파일 minify
+*/
 gulp.task('css-min', function() {
     gulp.src([
         'src/lib/bootstrap/dist/css/bootstrap.css',
@@ -65,21 +57,31 @@ gulp.task('css-min', function() {
         'src/css/style.css'
     ])
     .pipe(minifyCSS())
-    .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9'))
     .pipe(concat('style.min.css'))
     .pipe(gulp.dest('src/dist/css'))
 })
 
+/**
+* css에서 사용하는 font-icon 복사
+*/
 gulp.task('icon-copy', function() {
     gulp.src('src/lib/font-awesome/fonts/*.{ttf,woff,woff2,eot,svg,otf}')
     .on('error', gutil.log)
     .pipe(gulp.dest('src/dist/fonts'));
 });
 
+/**
+* dist안으로 image 파일 복사
+*/
 gulp.task('image-copy', function() {
     gulp.src('src/img/**.*')
     .on('error', gutil.log)
     .pipe(gulp.dest('src/dist/img'));
 });
 
-gulp.task('build',['requirejs-build','require-min','lib-min','css-min','icon-copy','image-copy'])
+/**
+* build task 작성
+*/
+gulp.task('build',['dist-clean'],function(){
+    gulp.start('requirejs-build','require-min','css-min','icon-copy','image-copy')
+})

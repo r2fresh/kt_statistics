@@ -10,13 +10,7 @@ app.get('/',function(req, res){
 app.use(express.static('src'));
 
 var getFunc = function(req, res) {
-
-    console.log(req.headers['x-auth-token'])
-
-    console.log(req._parsedUrl)
-    console.log(req.query)
-    console.log(req.search)
-
+    
     var token = req.headers['x-auth-token'];
 
     // var http = require('http');

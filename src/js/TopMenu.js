@@ -1,8 +1,10 @@
 define([
    'module',
-   'text!tpl/topMenu.html'
+   'text!tpl/topMenu.html',
+   'store',
+   'backbone'
    ],
-   function(module, TopMenu){
+   function(module, TopMenu, store, Backbone){
 
 	'use strict'
 

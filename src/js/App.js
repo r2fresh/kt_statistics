@@ -3,15 +3,43 @@ requirejs.config({
 	paths: {
 		text:'../lib/text/text',
 		tpl:'../template',
+
+
+		jquery:'../lib/jquery/dist/jquery',
 		Handlebars:'../lib/handlebars/handlebars',
 		d3:'../lib/d3/d3',
-		c3:'../lib/c3/c3'
+		c3:'../lib/c3/c3',
+		store:'../lib/store-js/store',
+		numeral:'../lib/numeral/numeral',
+		moment:'../lib/moment/moment',
+		ko:'../lib/moment/locale/ko',
+		datetimepicker:'../lib/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker',
+		underscore:'../lib/underscore/underscore',
+		backbone:'../lib/backbone/backbone',
+		'datatables.net':'../lib/datatables/media/js/jquery.dataTables',
+		'dataTable':'../lib/datatables/media/js/dataTables.bootstrap',
+		'r2Common':'utils/r2Common',
+		'common':'utils/common',
 	},
 	shim:{
         'c3':{
             deps: ['d3'], //angular가 로드되기 전에 jquery가 로드 되어야 한다.
             exports:'c3' //로드된 angular 라이브러리는 angular 라는 이름의 객체로 사용할 수 있게 해준다
-        }
+        },
+		'datetimepicker':{
+			deps:['moment','jquery'],
+			exports:'datetimepicker'
+		},
+		'backbone':{
+			deps:['underscore'],
+			exports:'Backbone'
+		},
+		'dataTable':{
+			deps:['datatables.net'],
+			exports:'dataTable'
+		},
+
+
     }
 });
 
@@ -19,9 +47,15 @@ requirejs([
 	'Login',
 	'Main',
 	'Dashboard',
-	'Handlebars'
+	'Handlebars',
+	'store',
+	'numeral',
+	'backbone',
+	'dataTable',
+	'r2Common',
+	'common'
 ],
-function(Login, Main, Dashboard, Handlebars){
+function(Login, Main, Dashboard, Handlebars, store, numeral, Backbone){
 
 	var prevView = null, routers = null;
 
@@ -87,7 +121,7 @@ function(Login, Main, Dashboard, Handlebars){
 		// 없으면 login 페이지로 전환하고 아니면 패스
 		if(!(KT.util.parseHash() !== null && KT.util.parseHash()[0] === 'login')){
 			if(store.get('auth') === undefined){
-				window.location.href="#login"
+				routers.navigate('#login',{ trigger: true, replace: true })
 				return;
 			}
 		}

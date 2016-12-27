@@ -1,8 +1,9 @@
 define([
  	'module',
- 	'text!tpl/r2_alert.html'
+ 	'text!tpl/r2_alert.html',
+    'backbone'
  	],
- 	function(module, R2_Alert){
+ 	function(module, R2_Alert, Backbone){
 
         'use strict'
 
