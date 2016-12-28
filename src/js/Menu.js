@@ -41,7 +41,7 @@ define([
 
         render:function(){
 
-            this.setElement('#kt_menu');
+            this.setElement('.kt-menu');
             if(this.$el.children().length === 0){
                 this.$el.html(Menu);
 

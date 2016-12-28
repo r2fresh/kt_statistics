@@ -3,9 +3,11 @@ define([
    'text!tpl/main.html',
    'Dashboard',
    'TopMenu',
-   'Sub'
+   'User',
+   'Menu',
+   'Action'
    ],
-   function(module, Main, Dashboard, TopMenu, Sub){
+   function(module, Main, Dashboard, TopMenu, User, Menu, Action){
 
 	'use strict'
  	module.exports = new (Backbone.View.extend({
@@ -26,12 +28,20 @@ define([
             TopMenu.show();
 
             switch(mainMenu){
-    			case 'user' :
+                case 'user' :
+    				User.render();
+    				this.prevView = User;
+    				User.show();
+    			break;
                 case 'menu' :
+    				Menu.render();
+    				this.prevView = Menu;
+    				Menu.show();
+    			break;
                 case 'action' :
-    				Sub.render(mainMenu);
-    				this.prevView = Sub;
-    				Sub.show();
+    				Action.render();
+    				this.prevView = Action;
+    				Action.show();
     			break;
                 default :
     				Dashboard.render();

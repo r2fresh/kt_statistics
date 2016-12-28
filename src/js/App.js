@@ -3,8 +3,6 @@ requirejs.config({
 	paths: {
 		text:'../lib/text/text',
 		tpl:'../template',
-
-
 		jquery:'../lib/jquery/dist/jquery',
 		Handlebars:'../lib/handlebars/handlebars',
 		d3:'../lib/d3/d3',
@@ -38,8 +36,6 @@ requirejs.config({
 			deps:['datatables.net'],
 			exports:'dataTable'
 		},
-
-
     }
 });
 

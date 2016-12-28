@@ -50,8 +50,8 @@ gulp.task('css-min', function() {
     gulp.src([
         'src/lib/bootstrap/dist/css/bootstrap.css',
         'src/lib/font-awesome/css/font-awesome.css',
-        'src/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
-        'src/lib/bootstrap/dist/css/bootstrap.css',
+        'src/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css',
+        'src/lib/datatables/media/css/dataTables.bootstrap.css',
         'src/lib/c3/c3.css',
         'src/css/common.css',
         'src/css/style.css'
@@ -65,7 +65,7 @@ gulp.task('css-min', function() {
 * css에서 사용하는 font-icon 복사
 */
 gulp.task('icon-copy', function() {
-    gulp.src('src/lib/font-awesome/fonts/*.{ttf,woff,woff2,eot,svg,otf}')
+    gulp.src(['src/lib/font-awesome/fonts/*.{ttf,woff,woff2,eot,svg,otf}','src/lib/bootstrap/dist/fonts/*.{ttf,woff,woff2,eot,svg,otf}'])
     .on('error', gutil.log)
     .pipe(gulp.dest('src/dist/fonts'));
 });

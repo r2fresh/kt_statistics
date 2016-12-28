@@ -17,7 +17,7 @@ define([
  		},
         render:function(mainMenu){
 
-            this.setElement('#kt_topMenu');
+            this.setElement('.kt-top-menu');
             if(this.$el.children().length === 0){
                 this.$el.html(TopMenu);
             }

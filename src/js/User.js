@@ -19,16 +19,12 @@ define([
         dayUserListTpl : '',
         hourUserListTpl : '',
         dateTimePickerTpl : '',
-
         pathDateOption : '',
-
-        startDate : '',
-        endDate : '',
-
+        fromDate : '',
+        toDate : '',
         userData : null,
-
         events :{
-            'change .kt_user_option input[name=dateRadioOption]': 'onChangeDate',
+            'change .kt-user-option input[name=dateRadioOption]': 'onChangeDate',
             'click .kt_user_serarch_btn': 'onClickSearch',
             'click .kt_user_table_btn': 'onClickHandlerTable',
             'click .kt_user_chart_btn': 'onClickHandlerChart'
@@ -36,7 +32,8 @@ define([
 
         render:function(){
 
-            this.setElement('#kt_user');
+            this.setElement('.kt-user');
+
             if(this.$el.children().length === 0){
                 this.$el.html(User);
 
@@ -48,33 +45,36 @@ define([
                 this.$el.find('.kt_user_list').empty()
             }
 
-            this.pathDateOption = this.$el.find('.kt_user_option input[name=dateRadioOption]:checked').val();
+            this.pathDateOption = this.$el.find('.kt-user-option input[name=dateRadioOption]:checked').val();
 
-            this.startDate = moment().format('YYYY-MM-') + '01'
-            this.endDate = moment().format('YYYY-MM-DD')
+            this.fromDate = moment().format('YYYY-MM-') + '01'
+            this.toDate = moment().format('YYYY-MM-DD')
 
+            this.setDateTimePicker();
+            this.getUser();
+            this.setDateRadioOptions();
+        },
+
+        setDateTimePicker:function(){
             var template = Handlebars.compile(this.dateTimePickerTpl);
-            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
-            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
+            this.$el.find('.kt-search-period > div').prepend(template({'dateTimePickerId':'toDate'}));
+            this.$el.find('.kt-search-period > div').prepend(template({'dateTimePickerId':'fromDate'}));
 
-            this.$el.find('.endDate').datetimepicker({
+            this.$el.find('.toDate').datetimepicker({
                 viewMode : 'days',
                 format : 'YYYY/MM/DD',
                 defaultDate : 'moment',
                 ignoreReadonly: true
             }).find('input[type="text"]').attr("readonly",true)
-            this.$el.find('.startDate').datetimepicker({
+
+            this.$el.find('.fromDate').datetimepicker({
                 viewMode : 'days',
                 format : 'YYYY/MM/DD',
                 defaultDate : moment().format('YYYYMM') + '01',
                 ignoreReadonly: true
             }).find('input[type="text"]').attr("readonly",true)
-
-            this.getUser();
-
-            this.setDateRadioOptions();
-
         },
+
 
         getUser:function(){
 
@@ -82,8 +82,8 @@ define([
 
             Model.getUser({
                 'pathDateOption' : this.pathDateOption,
-                'fromDate' : this.startDate,
-                'toDate' : this.endDate,
+                'fromDate' : this.fromDate,
+                'toDate' : this.toDate,
                 'success' : Function.prototype.bind.call(this.getUserSuccess,this),
                 'error' : Function.prototype.bind.call(this.getUserError,this)
             })
@@ -94,18 +94,32 @@ define([
 
             R2Loading.allDestroy();
 
-            if(this.pathDateOption === 'daily') {
+            if(jqXHR.status === 200 && textStatus === 'success'){
+
+                if(this.pathDateOption === 'daily') {
+                    this.userData = data;
+                } else if(this.pathDateOption === 'monthly'){
+                    this.userData = data.list;
+                } else if(this.pathDateOption === 'hourly'){
+                    this.userData = data.hourData;
+                }
+
                 this.userData = data;
+                this.setUserTable();
+                this.setUserChart();
+            }
+        },
+        setUserTable:function(){
+
+            if(this.pathDateOption === 'daily') {
                 var template = Handlebars.compile(this.dayUserListTpl);
-                this.$el.find('.kt_user_list').html(template({'userList':data}));
+                this.$el.find('.kt_user_list').html(template({'userList':this.userData}));
             } else if(this.pathDateOption === 'monthly'){
-                this.userData = data.list;
                 var template = Handlebars.compile(this.monthUserListTpl);
-                this.$el.find('.kt_user_list').html(template({'userList':data.list}));
+                this.$el.find('.kt_user_list').html(template({'userList':this.userData.list}));
             } else if(this.pathDateOption === 'hourly'){
-                this.userData = data.hourData;
                 var template = Handlebars.compile(this.hourUserListTpl);
-                this.$el.find('.kt_user_list').html(template({'userList':data.hourData}));
+                this.$el.find('.kt_user_list').html(template({'userList':this.userData.hourData}));
             }
 
             this.$el.find('.kt_user_list table').DataTable({
@@ -123,9 +137,6 @@ define([
                     }
                 }
             });
-
-            this.setUserChart();
-
         },
         getUserError:function(jsXHR, textStatus, errorThrown){
 
@@ -200,13 +211,11 @@ define([
             e.preventDefault();
             this.$el.find('.kt_user_list').empty();
 
-            var startDateValue = this.$el.find('.kt_user_option .startDate input').val();
-            var endDateValue = this.$el.find('.kt_user_option .endDate input').val();
+            var startDateValue = this.$el.find('.kt-user-option .fromDate input').val();
+            var endDateValue = this.$el.find('.kt-user-option .toDate input').val();
 
-            this.startDate = (startDateValue.split('/')).join('-');
-            this.endDate = (endDateValue.split('/')).join('-');
-
-            console.log(this.startDate)
+            this.fromDate = (startDateValue.split('/')).join('-');
+            this.toDate = (endDateValue.split('/')).join('-');
 
             this.getUser();
         },
@@ -262,12 +271,12 @@ define([
             console.log( $(e.currentTarget).val() );
             this.pathDateOption = $(e.currentTarget).val();
 
-            this.$el.find('.kt_user_option .startDate').remove();
-            this.$el.find('.kt_user_option .endDate').remove();
+            this.$el.find('.kt-user-option .fromDate').remove();
+            this.$el.find('.kt-user-option .toDate').remove();
 
             var template = Handlebars.compile(this.dateTimePickerTpl);
-            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
-            this.$el.find('.kt_user_option .kt_user_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
+            this.$el.find('.kt-user-option .kt_user_serarch_btn').before(template({'dateTimePickerId':'fromDate'}));
+            this.$el.find('.kt-user-option .kt_user_serarch_btn').before(template({'dateTimePickerId':'toDate'}));
 
             var viewMode = '';
             var format = '';
@@ -284,14 +293,14 @@ define([
                 startDefaultDate = 'moment'
             }
 
-            this.$el.find('.endDate').datetimepicker({
+            this.$el.find('.toDate').datetimepicker({
                 viewMode : viewMode,
                 format : format,
                 defaultDate : 'moment',
                 ignoreReadonly: true
             })
 
-            this.$el.find('.startDate').datetimepicker({
+            this.$el.find('.fromDate').datetimepicker({
                 viewMode : viewMode,
                 format : format,
                 defaultDate : startDefaultDate,
@@ -299,11 +308,11 @@ define([
             })
 
             if(this.pathDateOption === 'monthly'){
-                this.$el.find('#startDate').on('dp.show',function(e){
+                this.$el.find('.fromDate').on('dp.show',function(e){
                     $(this).data("DateTimePicker").viewMode('months');
                 })
 
-                this.$el.find('#endDate').on('dp.show',function(e){
+                this.$el.find('.toDate').on('dp.show',function(e){
                     $(this).data("DateTimePicker").viewMode('months');
                     console.log('ksy')
                 })

@@ -115,7 +115,7 @@ define([
 
         setUserTable:function(){
             var template = Handlebars.compile(this.dayUserListTpl);
-            this.$el.find('.kt-dashboard-user .user-table').html(template({'userList':this.userData}));
+            this.$el.find('.kt-dashboard-user-table').html(template({'userList':this.userData}));
         },
         setUserChart:function(){
             var chartData   = null;
@@ -128,7 +128,7 @@ define([
             chartData = [dateArr, uniqVists, pageViews, visits]
 
             var chart = c3.generate({
-                bindto:'.kt-dashboard-user .user-chart',
+                bindto:'.kt-dashboard-user-chart',
                 data: {
                     x : 'x',
                     columns: chartData
@@ -252,12 +252,12 @@ define([
         },
 
         setMenuTable:function(){
-            if(this.$el.find('.kt-dashboard-menu .menu-table').children().length > 0){
-                this.$el.find('.kt-dashboard-menu .menu-table').empty();
+            if(this.$el.find('.kt-dashboard-menu-table').children().length > 0){
+                this.$el.find('.kt-dashboard-menu-table').empty();
             }
 
             var template = Handlebars.compile(this.menuTableTpl);
-            this.$el.find('.kt-dashboard-menu .menu-table').html(template( {'list':this.selectMenuData} ));
+            this.$el.find('.kt-dashboard-menu-table').html(template( {'list':this.selectMenuData} ));
         },
 
         setMenuChart:function(){
@@ -271,7 +271,7 @@ define([
             chartData = [dateArr, ios, android, total]
 
             var chart = c3.generate({
-                bindto:'.kt-dashboard-menu .menu-chart',
+                bindto:'.kt-dashboard-menu-chart',
                 data: {
                     x : 'x',
                     columns:chartData
@@ -423,9 +423,9 @@ define([
             this.setActionChart();
         },
         setActionTable:function(){
-            this.$el.find('.kt-dashboard-action .actino-table').empty();
+            this.$el.find('.kt-dashboard-actino-table').empty();
             var template = Handlebars.compile(this.actionTableTpl);
-            this.$el.find('.kt-dashboard-action .action-table').html(template({'actionList':this.actionData}));
+            this.$el.find('.kt-dashboard-action-table').html(template({'actionList':this.actionData}));
         },
         setActionChart:function(){
             var chartData = null;
@@ -437,7 +437,7 @@ define([
             chartData = [dateArr, ios, android]
 
             var chart = c3.generate({
-                bindto:'.kt-dashboard-action .action-chart',
+                bindto:'.kt-dashboard-action-chart',
                 data: {
                     x : 'x',
                     columns:chartData

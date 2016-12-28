@@ -33,7 +33,7 @@ define([
  		},
 
         render:function(){
-            this.setElement('#kt_action');
+            this.setElement('.kt-action');
             if(this.$el.children().length === 0){
                 this.$el.html(Action);
 
