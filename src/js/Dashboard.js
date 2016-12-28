@@ -24,16 +24,42 @@ define([
 
         render:function(mainMenu){
 
-            this.setElement('.dashboard');
+            this.setElement('.kt-dashboard');
 
             if(this.$el.children().length === 0){
                 this.$el.html(Dashboard);
 
+                this.dashboardTpl       = $(Template).find('.dashboard-tpl').html();
                 this.dayUserListTpl     = $(Template).find('.day-user-list-tpl').html();
                 this.menuTableTpl       = $(Template).find('.kt-menu-table-tpl').html();
                 this.actionTableTpl     = $(Template).find('.kt-action-table-tpl').html();
                 this.selectboxTpl       = $(Template).find('.kt-selectbox-tpl').html();
             }
+
+            this.setDashboard();
+        },
+        setDashboard:function(){
+
+            var dashboardData = [
+                {
+                    'hash-name':'user',
+                    'fa-icon-name':'fa-users',
+                    'panel-title':'방문자별 (일주일)',
+                },
+                {
+                    'hash-name':'menu',
+                    'fa-icon-name':'fa-th-list',
+                    'panel-title':'메뉴별 (일주일)',
+                },
+                {
+                    'hash-name':'action',
+                    'fa-icon-name':'fa-check-circle',
+                    'panel-title':'서비스별 (일주일)',
+                }
+            ];
+
+            var template = Handlebars.compile(this.dashboardTpl);
+            this.$el.find('.kt-dashboard-main .container').html(template({'dashboardList':dashboardData}));
 
             this.getUser();
         },
@@ -92,12 +118,12 @@ define([
             this.$el.find('.kt-dashboard-user .user-table').html(template({'userList':this.userData}));
         },
         setUserChart:function(){
-            var chartData = null;
+            var chartData   = null;
 
-            var uniqVists = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
-            var pageViews = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
-            var visits = (['방문자']).concat(_.pluck(this.userData,'visits'))
-            var dateArr = (['x']).concat(_.pluck(this.userData,'date'))
+            var uniqVists   = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
+            var pageViews   = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
+            var visits      = (['방문자']).concat(_.pluck(this.userData,'visits'))
+            var dateArr     = (['x']).concat(_.pluck(this.userData,'date'))
 
             chartData = [dateArr, uniqVists, pageViews, visits]
 
@@ -110,6 +136,14 @@ define([
                 axis: {
                     x: {
                         type: 'category'
+                    }
+                },
+                tooltip: {
+                    format: {
+                        value: function (value, ratio, id) {
+                            var format = d3.format(',');
+                            return format(value);
+                        }
                     }
                 }
             });
@@ -245,6 +279,14 @@ define([
                 axis: {
                     x: {
                         type: 'category'
+                    }
+                },
+                tooltip: {
+                    format: {
+                        value: function (value, ratio, id) {
+                            var format = d3.format(',');
+                            return format(value);
+                        }
                     }
                 }
             });
@@ -403,6 +445,14 @@ define([
                 axis: {
                     x: {
                         type: 'category'
+                    }
+                },
+                tooltip: {
+                    format: {
+                        value: function (value, ratio, id) {
+                            var format = d3.format(',');
+                            return format(value);
+                        }
                     }
                 }
             });

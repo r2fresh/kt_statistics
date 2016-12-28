@@ -9,14 +9,14 @@ define([
 
 	'use strict'
  	module.exports = new (Backbone.View.extend({
- 		el: '.login',
+ 		el: '.kt-login',
         events :{
-            'click #kt_login_submit' : 'onSubmit'
+            'click .kt-login-submit' : 'onSubmit'
  		},
         render:function(){
             this.$el.html(Login);
-            this.$id = this.$el.find('#kt_login_insert_id')
-            this.$pwd = this.$el.find('#kt_login_pwd')
+            this.$id = this.$el.find('.kt-login-id')
+            this.$pwd = this.$el.find('.kt-login-pwd')
         },
         onSubmit:function(e){
 
