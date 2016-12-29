@@ -8,7 +8,8 @@ define([
    'c3',
    'store',
    'moment',
-   'datetimepicker'
+   'datetimepicker',
+   'moment/locale/ko'
    ],
    function(module, Menu, Template, R2Loading, Model, Handlebars, c3, store, moment, datetimepicker){
 
@@ -17,19 +18,12 @@ define([
  	module.exports = new (Backbone.View.extend({
 
         dateTimePickerTpl : '',
-
         selectboxTpl: '',
-
         menuListTpl:'',
-
         areaArr:null,
-
         areaIndex : 0,
-
         menuIndex : 0,
-
         menuData : null,
-
         events :{
             'click .kt_menu_csv_btn': 'onCVSClickHanlder',
             'click .kt_menu_serarch_btn': 'onSearchHanlder',
@@ -50,17 +44,128 @@ define([
                 this.dateTimePickerTpl  = $(Template).find('.kt-dateTimePicker-tpl').html();
             }
 
-            this.$el.find('#example').DataTable({
-                "ordering" : false,
-                "info" : false,
-                'filter' : false,
-                'lengthChange' : false
-            });
-
             this.setDateTimePicker();
-            this.onSearchHanlder(null);
+            this.getMenu();
 
         },
+
+        /**
+        * DateTimePicker rendering 및 setting
+        */
+        setDateTimePicker:function(){
+
+            var template = Handlebars.compile(this.dateTimePickerTpl);
+            this.$el.find('.kt_menu_option .kt_menu_serarch_btn').before(template({'dateTimePickerId':'fromDate'}));
+            this.$el.find('.kt_menu_option .kt_menu_serarch_btn').before(template({'dateTimePickerId':'toDate'}));
+
+            var dateTimePickerOption = {
+                viewMode : 'days',
+                format : 'YYYY-MM-DD',
+                ignoreReadonly: true,
+                locale :moment.locale('ko'),
+            }
+
+            this.$el.find('.fromDate').datetimepicker( _.extend(dateTimePickerOption,{'defaultDate':this.getStartDate()}) )
+            this.$el.find('.toDate').datetimepicker( _.extend(dateTimePickerOption,{'defaultDate':this.getEndDate()}) )
+        },
+
+        getMenu:function(){
+
+            R2Loading.render({'msg':'메뉴별 데이터를\n불러오는 중입니다.','w':300})
+
+            Model.getMenu({
+                'fromDate' : this.getStartDate(),
+                'toDate' : this.getEndDate(),
+                'success' : Function.prototype.bind.call(this.getMenuSuccess,this),
+                'error' : Function.prototype.bind.call(this.getMenuError,this)
+            })
+        },
+
+        getMenuSuccess:function(data, textStatus, jqXHR){
+
+            R2Loading.allDestroy();
+
+            if(jqXHR.status === 200 && textStatus === 'success'){
+
+                this.menuData = data.list;
+                this.areaIndex = 0;
+                this.menuIndex = 0;
+                this.setAreaSelectBox(data)
+                this.setMenuList();
+
+            }
+        },
+
+        getMenuError:function(jsXHR, textStatus, errorThrown){
+
+            R2Loading.allDestroy();
+
+            if(textStatus === 'error'){
+                if(jsXHR.status === 403) {
+                    alert('토큰이 만료 되었습니다.')
+                    store.remove('auth');
+                    window.location.href="#login";
+                }
+            }
+        },
+
+        setAreaSelectBox:function(){
+
+            this.areaArr = _.map(this.menuData, function( areaObj, areaIndex){
+                return {
+                    'name' : areaObj.area,
+                    'list' : _.map( areaObj.menuList, function( menuObj, menuIndex){
+                        return {'name':menuObj.menuName, 'index':menuIndex }
+                    })
+                }
+            });
+
+            if(this.$el.find('.kt_area_name_option').length > 0){
+                this.$el.find('.kt_area_name_option').remove();
+            }
+
+            var template = Handlebars.compile(this.selectboxTpl);
+            this.$el.find('.kt_menu_control').append(template( {'className':'kt_area_name_option','list':this.areaArr} ));
+
+            this.setMenuSelectBox(this.areaIndex)
+
+        },
+
+        setMenuSelectBox:function(areaIndex){
+
+            if(this.$el.find('.kt_menu_name_option').length > 0){
+                this.$el.find('.kt_menu_name_option').remove();
+            }
+
+            var obj = {'className':'kt_menu_name_option','list':this.areaArr[areaIndex].list}
+            var template = Handlebars.compile(this.selectboxTpl);
+            this.$el.find('.kt_menu_control').append(template(obj));
+
+        },
+
+        onSearchHanlder:function(e){
+            this.getMenu();
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -107,36 +212,15 @@ define([
 
 
 
-        onSearchHanlder:function(e){
 
-            R2Loading.render({'msg':'메뉴별 데이터를\n불러오는 중입니다.','w':300})
 
-            this.getMenu();
-        },
 
-        /**
-        * DateTimePicker rendering 및 setting
-        */
-        setDateTimePicker:function(){
-
-            var template = Handlebars.compile(this.dateTimePickerTpl);
-            this.$el.find('.kt_menu_option .kt_menu_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
-            this.$el.find('.kt_menu_option .kt_menu_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
-
-            var dateTimePickerOption = {
-                viewMode : 'days',
-                format : 'YYYY-MM-DD',
-                ignoreReadonly: true
-            }
-            this.$el.find('.startDate').datetimepicker( _.extend(dateTimePickerOption,{'defaultDate':this.getStartDate()}) )
-            this.$el.find('.endDate').datetimepicker( _.extend(dateTimePickerOption,{'defaultDate':this.getEndDate()}) )
-        },
 
         /**
         * 검색 시작 일 가져오기
         */
         getStartDate:function(){
-            var date = this.$el.find('.kt_menu_option .startDate input').val();
+            var date = this.$el.find('.kt_menu_option .fromDate input').val();
             return ( date === '' ) ? moment().format('YYYY-MM-') + '01' : date;
         },
 
@@ -144,137 +228,18 @@ define([
         * 검색 끝 일 가져오기
         */
         getEndDate:function(){
-            var date = this.$el.find('.kt_menu_option .endDate input').val();
+            var date = this.$el.find('.kt_menu_option .toDate input').val();
             return ( date === '' ) ? moment().format('YYYY-MM-DD') : date;
         },
 
-        /**출
-        * 메뉴별 데이터 호출
-        */
-        getMenu:function(){
-
-            Model.getMenu({
-                'fromDate' : this.getStartDate(),
-                'toDate' : this.getEndDate(),
-                'success' : Function.prototype.bind.call(this.getMenuSuccess,this),
-                'error' : Function.prototype.bind.call(this.getMenuError,this)
-            })
-
-            // Model.getMenu({
-            //     url: KT.HOST + '/info/membership/menu',
-            //     data:queryData,
-            //     method : 'GET',
-            //     headers : {
-            //         'x-auth-token' : token
-            //     },
-            //     dataType : 'json',
-            //     contentType:"application/json; charset=UTF-8",
-            //     success : Function.prototype.bind.call(this.getMenuSuccess,this),
-            //     complete : function(sss){
-            //             console.log(sss)
-            //     },
-            //     error : Function.prototype.bind.call(this.getMenuError,this)
-            // })
-        },
-        getMenuSuccess:function(data, textStatus, jqXHR){
-
-            R2Loading.allDestroy();
-
-            console.log(data);
-
-            this.menuData = data.list;
-
-            this.areaIndex = 0;
-
-            this.menuIndex = 0;
-
-            this.setAreaSelectBox(data)
-
-            this.setMenuList();
-
-            //this.setMenuChart();
-
-            // var menuDataArr = [];
-            //
-            // var menuKeyList = _.keys( data.menuStatisticMap );
-            //
-            // for(var i=0; i<menuKeyList.length; ++i){
-            //
-            //     var keyList = _.keys( data.menuStatisticMap[menuKeyList[i]] )
-            //
-            //     var list = [];
-            //
-            //     for(var j=0; j<keyList.length; ++j){
-            //
-            //         list.push( data.menuStatisticMap[menuKeyList[i]][keyList[j]] )
-            //
-            //     }
-            //
-            //     var obj = {
-            //         'list' : list,
-            //         'menu' : menuKeyList[i],
-            //     }
-            //     menuDataArr.push(obj)
-            // }
-            //
-            // console.log( menuDataArr )
-
-        },
-        getMenuError:function(jsXHR, textStatus, errorThrown){
-
-            R2Loading.allDestroy();
-
-            console.log(jsXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-
-            if(textStatus === 'error'){
-                if(jsXHR.status === 403) {
-
-                    alert('토큰이 만료 되었습니다.')
-                    store.remove('auth');
-                    window.location.href="#login";
-                }
-            }
-        },
-
-        setAreaSelectBox:function(data){
 
 
 
-            this.areaArr = _.map(data.list, function( areaObj, areaIndex){
-                return {
-                    'name' : areaObj.area,
-                    //'index' : areaIndex ,
-                    'list' : _.map( areaObj.menuList, function( menuObj, menuIndex){
-                        return {'name':menuObj.menuName, 'index':menuIndex }
-                    })
-                }
 
-            });
 
-            if(this.$el.find('.kt_area_name_option').length > 0){
-                this.$el.find('.kt_area_name_option').remove();
-            }
 
-            var template = Handlebars.compile(this.selectboxTpl);
-            this.$el.find('.kt_menu_control').append(template( {'className':'kt_area_name_option','list':this.areaArr} ));
 
-            this.setMenuSelectBox(this.areaIndex)
 
-        },
-
-        setMenuSelectBox:function(areaIndex){
-
-            if(this.$el.find('.kt_menu_name_option').length > 0){
-                this.$el.find('.kt_menu_name_option').remove();
-            }
-
-            var obj = {'className':'kt_menu_name_option','list':this.areaArr[areaIndex].list}
-            var template = Handlebars.compile(this.selectboxTpl);
-            this.$el.find('.kt_menu_control').append(template(obj));
-
-        },
 
         setMenuImage:function(){
 

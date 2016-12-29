@@ -8,7 +8,8 @@ define([
    'c3',
    'store',
    'moment',
-   'datetimepicker'
+   'datetimepicker',
+   'moment/locale/ko'
    ],
    function(module, User, Template, R2Loading, Model, Handlebars, c3, store, moment, datetimepicker){
 
@@ -23,11 +24,12 @@ define([
         fromDate : '',
         toDate : '',
         userData : null,
+        userChart : null,
         events :{
             'change .kt-user-option input[name=dateRadioOption]': 'onChangeDate',
-            'click .kt_user_serarch_btn': 'onClickSearch',
-            'click .kt_user_table_btn': 'onClickHandlerTable',
-            'click .kt_user_chart_btn': 'onClickHandlerChart'
+            'click .kt-user-serarch-btn': 'onClickSearch',
+            'click .kt-user-table-btn': 'onClickHandlerTable',
+            'click .kt-user-chart-btn': 'onClickHandlerChart'
  		},
 
         render:function(){
@@ -41,8 +43,6 @@ define([
                 this.hourUserListTpl    = $(Template).find('.hour_user_list_tpl').html();
                 this.monthUserListTpl   = $(Template).find('.month_user_list_tpl').html();
                 this.dateTimePickerTpl  = $(Template).find('.kt-dateTimePicker-tpl').html();
-
-                this.$el.find('.kt_user_list').empty()
             }
 
             this.pathDateOption = this.$el.find('.kt-user-option input[name=dateRadioOption]:checked').val();
@@ -52,77 +52,93 @@ define([
 
             this.setDateTimePicker();
             this.getUser();
-            this.setDateRadioOptions();
         },
 
         setDateTimePicker:function(){
+            this.$el.find('.kt-search-period > div .fromDate').remove();
+            this.$el.find('.kt-search-period > div .toDate').remove();
+
             var template = Handlebars.compile(this.dateTimePickerTpl);
             this.$el.find('.kt-search-period > div').prepend(template({'dateTimePickerId':'toDate'}));
             this.$el.find('.kt-search-period > div').prepend(template({'dateTimePickerId':'fromDate'}));
 
+            var viewMode = '';
+            var format = '';
+            var startDefaultDate = ''
+
+            if(this.pathDateOption === 'day' || this.pathDateOption === 'hour'){
+                viewMode = 'days';
+                format = 'YYYY/MM/DD';
+                startDefaultDate = moment().format('YYYYMM') + '01'
+
+            } else if(this.pathDateOption === 'month'){
+                viewMode = 'months';
+                format = 'YYYY/MM';
+                startDefaultDate = 'moment'
+            }
+
             this.$el.find('.toDate').datetimepicker({
-                viewMode : 'days',
-                format : 'YYYY/MM/DD',
+                viewMode : viewMode,
+                format : format,
                 defaultDate : 'moment',
+                locale :moment.locale('ko'),
                 ignoreReadonly: true
-            }).find('input[type="text"]').attr("readonly",true)
+            })
 
             this.$el.find('.fromDate').datetimepicker({
-                viewMode : 'days',
-                format : 'YYYY/MM/DD',
-                defaultDate : moment().format('YYYYMM') + '01',
+                viewMode : viewMode,
+                format : format,
+                defaultDate : startDefaultDate,
+                locale :moment.locale('ko'),
                 ignoreReadonly: true
-            }).find('input[type="text"]').attr("readonly",true)
+            })
+
+            if(this.pathDateOption === 'month'){
+                this.$el.find('.fromDate').on('dp.show',function(e){
+                    $(this).data("DateTimePicker").viewMode('months');
+                })
+
+                this.$el.find('.toDate').on('dp.show',function(e){
+                    $(this).data("DateTimePicker").viewMode('months');
+                })
+            }
         },
 
+        onChangeDate:function(e){
+            this.pathDateOption = $(e.currentTarget).val();
+            this.setDateTimePicker();
+        },
 
         getUser:function(){
 
             R2Loading.render({'msg':'방문자별 데이터를\n불러오는 중입니다.','w':300})
 
             Model.getUser({
-                'pathDateOption' : this.pathDateOption,
+                'pathDateOption' : (this.pathDateOption === 'day') ? 'daily' : (this.pathDateOption === 'month') ? 'monthly' : 'hourly',
                 'fromDate' : this.fromDate,
                 'toDate' : this.toDate,
                 'success' : Function.prototype.bind.call(this.getUserSuccess,this),
                 'error' : Function.prototype.bind.call(this.getUserError,this)
             })
         },
-
-
         getUserSuccess:function(data, textStatus, jqXHR){
 
             R2Loading.allDestroy();
 
             if(jqXHR.status === 200 && textStatus === 'success'){
 
-                if(this.pathDateOption === 'daily') {
-                    this.userData = data;
-                } else if(this.pathDateOption === 'monthly'){
-                    this.userData = data.list;
-                } else if(this.pathDateOption === 'hourly'){
-                    this.userData = data.hourData;
-                }
+                this.userData = (this.pathDateOption === 'day') ? data : (this.pathDateOption === 'month') ? data.list : data.hourData;
 
-                this.userData = data;
                 this.setUserTable();
                 this.setUserChart();
             }
         },
         setUserTable:function(){
 
-            if(this.pathDateOption === 'daily') {
-                var template = Handlebars.compile(this.dayUserListTpl);
-                this.$el.find('.kt_user_list').html(template({'userList':this.userData}));
-            } else if(this.pathDateOption === 'monthly'){
-                var template = Handlebars.compile(this.monthUserListTpl);
-                this.$el.find('.kt_user_list').html(template({'userList':this.userData.list}));
-            } else if(this.pathDateOption === 'hourly'){
-                var template = Handlebars.compile(this.hourUserListTpl);
-                this.$el.find('.kt_user_list').html(template({'userList':this.userData.hourData}));
-            }
+            var template = Handlebars.compile(this[this.pathDateOption + 'UserListTpl']);
+            this.$el.find('.kt-user-table').html(template({'userList':this.userData}));
 
-            this.$el.find('.kt_user_list table').DataTable({
+            this.$el.find('.kt-user-table table').DataTable({
                 'ordering' : true,
                 'info' : false,
                 'filter' : false,
@@ -150,29 +166,6 @@ define([
                 }
             }
         },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         onClickHandlerTable:function(e){
 
             e.preventDefault();
@@ -180,11 +173,11 @@ define([
             var $btn = $(e.currentTarget);
 
             if($btn.data('type') === 'default'){
-                this.$el.find('.kt_user_table').removeClass('displayNone');
+                this.$el.find('.kt-user-table').removeClass('displayNone');
                 $btn.data('type','success');
                 $btn.removeClass('btn-default').addClass('btn-success');
             } else {
-                this.$el.find('.kt_user_table').addClass('displayNone');
+                this.$el.find('.kt-user-table').addClass('displayNone');
                 $btn.data('type','default');
                 $btn.removeClass('btn-success').addClass('btn-default');
             }
@@ -194,22 +187,22 @@ define([
             e.preventDefault();
 
             var $btn = $(e.currentTarget);
+            var $chartPanel = this.$el.find('.kt-user-chart-panel');
 
             if($btn.data('type') === 'default'){
-                this.$el.find('.kt_user_chart').removeClass('displayNone');
+                $chartPanel.removeClass('displayNone');
                 $btn.data('type','info');
                 $btn.removeClass('btn-default').addClass('btn-info');
-
-                this.setUserChart();
+                this.userChart.resize();
             } else {
-                this.$el.find('.kt_user_chart').addClass('displayNone');
+                $chartPanel.addClass('displayNone');
                 $btn.data('type','default');
                 $btn.removeClass('btn-info').addClass('btn-default');
             }
         },
         onClickSearch:function(e){
             e.preventDefault();
-            this.$el.find('.kt_user_list').empty();
+            this.$el.find('.kt-user-table').empty();
 
             var startDateValue = this.$el.find('.kt-user-option .fromDate input').val();
             var endDateValue = this.$el.find('.kt-user-option .toDate input').val();
@@ -221,28 +214,23 @@ define([
         },
 
         setUserChart:function(){
+            var chartData = null
+            ,$chart = this.$el.find('.kt-user-chart');
 
-
-            console.log(this.userData)
-
-            var chartData = null;
-
-            if(this.pathDateOption === 'daily'){
+            if(this.pathDateOption === 'day'){
                 var uniqVists = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
                 var pageViews = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
                 var visits = (['방문자']).concat(_.pluck(this.userData,'visits'))
                 var dateArr = (['x']).concat(_.pluck(this.userData,'date'))
-
-                console.log(dateArr)
                 chartData = [dateArr, uniqVists, pageViews, visits]
-            } else if(this.pathDateOption === 'monthly') {
+            } else if(this.pathDateOption === 'month') {
                 var uniqVists = (['고유방문자']).concat(_.pluck(this.userData,'uniqVisits'))
                 var pageViews = (['페이지뷰']).concat(_.pluck(this.userData,'pageViews'))
                 var visits = (['방문자']).concat(_.pluck(this.userData,'visits'))
                 var dateArr = (['x']).concat(_.pluck(this.userData,'month'))
 
                 chartData = [dateArr, uniqVists, pageViews, visits]
-            } else if(this.pathDateOption === 'hourly') {
+            } else if(this.pathDateOption === 'hour') {
                 var avgPagesViews = (['평균페이지뷰']).concat(_.pluck(this.userData,'avgPagesViews'))
                 var avgUniqVisits = (['평균고유방문자']).concat(_.pluck(this.userData,'avgUniqVisits'))
                 var avgVisits = (['평균방문자']).concat(_.pluck(this.userData,'avgVisits'))
@@ -251,10 +239,8 @@ define([
                 chartData = [dateArr, avgPagesViews, avgUniqVisits, avgVisits]
             }
 
-            console.log(chartData)
-
-            var chart = c3.generate({
-                bindto:'.user_chart',
+            this.userChart = c3.generate({
+                bindto:'.kt-user-chart',
                 data: {
                     x : 'x',
                     columns: chartData
@@ -266,69 +252,6 @@ define([
                 }
             });
         },
-
-        onChangeDate:function(e){
-            console.log( $(e.currentTarget).val() );
-            this.pathDateOption = $(e.currentTarget).val();
-
-            this.$el.find('.kt-user-option .fromDate').remove();
-            this.$el.find('.kt-user-option .toDate').remove();
-
-            var template = Handlebars.compile(this.dateTimePickerTpl);
-            this.$el.find('.kt-user-option .kt_user_serarch_btn').before(template({'dateTimePickerId':'fromDate'}));
-            this.$el.find('.kt-user-option .kt_user_serarch_btn').before(template({'dateTimePickerId':'toDate'}));
-
-            var viewMode = '';
-            var format = '';
-            var startDefaultDate = ''
-
-            if(this.pathDateOption === 'daily' || this.pathDateOption === 'hourly'){
-                viewMode = 'days';
-                format = 'YYYY/MM/DD';
-                startDefaultDate = moment().format('YYYYMM') + '01'
-
-            } else if(this.pathDateOption === 'monthly'){
-                viewMode = 'months';
-                format = 'YYYY/MM';
-                startDefaultDate = 'moment'
-            }
-
-            this.$el.find('.toDate').datetimepicker({
-                viewMode : viewMode,
-                format : format,
-                defaultDate : 'moment',
-                ignoreReadonly: true
-            })
-
-            this.$el.find('.fromDate').datetimepicker({
-                viewMode : viewMode,
-                format : format,
-                defaultDate : startDefaultDate,
-                ignoreReadonly: true
-            })
-
-            if(this.pathDateOption === 'monthly'){
-                this.$el.find('.fromDate').on('dp.show',function(e){
-                    $(this).data("DateTimePicker").viewMode('months');
-                })
-
-                this.$el.find('.toDate').on('dp.show',function(e){
-                    $(this).data("DateTimePicker").viewMode('months');
-                    console.log('ksy')
-                })
-            }
-        },
-
-
-
-
-
-        setDateRadioOptions:function(){
-
-            //this.$el.find('.user_option input[type=radio]').
-
-        },
-
         hide : function(){
             this.$el.addClass('displayNone');
         },

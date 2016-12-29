@@ -8,11 +8,14 @@ define([
    'c3',
    'store',
    'moment',
-   'datetimepicker'
+   'datetimepicker',
+   'moment/locale/ko'
    ],
    function(module, Action, Template, R2Loading, Model, Handlebars, c3, store, moment, datetimepicker){
 
 	'use strict'
+
+    moment.locale('ko');
 
  	module.exports = new (Backbone.View.extend({
 
@@ -72,13 +75,15 @@ define([
                 viewMode : 'days',
                 format : 'YYYY/MM/DD',
                 defaultDate : 'moment',
-                ignoreReadonly: true
+                ignoreReadonly: true,
+                locale :moment.locale('ko')
             }).find('input[type="text"]').attr("readonly",true)
             this.$el.find('.startDate').datetimepicker({
                 viewMode : 'days',
                 format : 'YYYY/MM/DD',
                 defaultDate : moment().format('YYYYMM') + '01',
-                ignoreReadonly: true
+                ignoreReadonly: true,
+                locale :moment.locale('ko')
             }).find('input[type="text"]').attr("readonly",true)
 
 

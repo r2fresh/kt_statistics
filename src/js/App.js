@@ -1,19 +1,24 @@
 requirejs.config({
 	baseUrl: '/js',
+	packages: [{
+		name: 'moment',
+		// This location is relative to baseUrl. Choose bower_components
+		// or node_modules, depending on how moment was installed.
+		location: '../lib/moment/',
+		main: 'moment'
+	}],
 	paths: {
-		text:'../lib/text/text',
-		tpl:'../template',
-		jquery:'../lib/jquery/dist/jquery',
-		Handlebars:'../lib/handlebars/handlebars',
-		d3:'../lib/d3/d3',
-		c3:'../lib/c3/c3',
-		store:'../lib/store-js/store',
-		numeral:'../lib/numeral/numeral',
-		moment:'../lib/moment/moment',
-		ko:'../lib/moment/locale/ko',
-		datetimepicker:'../lib/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker',
-		underscore:'../lib/underscore/underscore',
-		backbone:'../lib/backbone/backbone',
+		'text':'../lib/text/text',
+		'tpl':'../template',
+		'jquery':'../lib/jquery/dist/jquery',
+		'Handlebars':'../lib/handlebars/handlebars',
+		'd3':'../lib/d3/d3',
+		'c3':'../lib/c3/c3',
+		'store':'../lib/store-js/store',
+		'numeral':'../lib/numeral/numeral',
+		'datetimepicker':'../lib/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker',
+		'underscore':'../lib/underscore/underscore',
+		'backbone':'../lib/backbone/backbone',
 		'datatables.net':'../lib/datatables/media/js/jquery.dataTables',
 		'dataTable':'../lib/datatables/media/js/dataTables.bootstrap',
 		'r2Common':'utils/r2Common',
@@ -21,8 +26,8 @@ requirejs.config({
 	},
 	shim:{
         'c3':{
-            deps: ['d3'], //angular가 로드되기 전에 jquery가 로드 되어야 한다.
-            exports:'c3' //로드된 angular 라이브러리는 angular 라는 이름의 객체로 사용할 수 있게 해준다
+            deps: ['d3'],
+            exports:'c3'
         },
 		'datetimepicker':{
 			deps:['moment','jquery'],
@@ -48,6 +53,7 @@ requirejs([
 	'numeral',
 	'backbone',
 	'dataTable',
+	'moment/locale/ko',
 	'r2Common',
 	'common'
 ],

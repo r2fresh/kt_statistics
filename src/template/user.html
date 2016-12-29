@@ -5,20 +5,20 @@
           <label class="col-md-2 text-right"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i> 검색 구분 : </label>
           <div class="col-md-10 form-inline">
               <label class="radio-inline">
-                  <input type="radio" name="dateRadioOption" value="daily" checked> 일별
+                  <input type="radio" name="dateRadioOption" value="day" checked> 일별
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="dateRadioOption" value="monthly"> 월별
+                  <input type="radio" name="dateRadioOption" value="month"> 월별
               </label>
               <label class="radio-inline">
-                  <input type="radio" name="dateRadioOption" value="hourly"> 시간별
+                  <input type="radio" name="dateRadioOption" value="hour"> 시간별
               </label>
           </div>
       </div>
       <div class="row kt-search-period">
           <label class="col-md-2"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i> 검색 기간 : </label>
           <div class="col-md-10 form-inline">
-              <button class="btn btn-primary kt_user_serarch_btn"><i class="fa fa-search" aria-hidden="true"></i> <strong>검 색</strong></button>
+              <button class="btn btn-primary kt-user-serarch-btn"><i class="fa fa-search" aria-hidden="true"></i> <strong>검 색</strong></button>
           </div>
       </div>
   </div>
@@ -27,21 +27,21 @@
 <!--  방문자 테이블과 차트 보기 버튼 -->
 <div class="row _m10_b">
     <div class="col-md-12 text-right">
-         <button class="btn btn-success kt_user_table_btn" data-type='success'><i class="fa fa-table" aria-hidden="true"></i> <strong>테이블</strong></button>
-         <button class="btn btn-default kt_user_chart_btn" data-type='default'><i class="fa fa-line-chart" aria-hidden="true"></i> <strong>차 트</strong></button>
+         <button class="btn btn-success kt-user-table-btn" data-type='success'><i class="fa fa-table" aria-hidden="true"></i> <strong>테이블</strong></button>
+         <button class="btn btn-default kt-user-chart-btn" data-type='default'><i class="fa fa-line-chart" aria-hidden="true"></i> <strong>차 트</strong></button>
     </div>
 </div>
 
 <!--  방문자 차트 부분-->
-<div class="panel panel-default kt_user_chart displayNone">
+<div class="panel panel-default kt-user-chart-panel displayNone">
   <div class="panel-body">
-        <div class="user_chart"></div>
+        <div class="kt-user-chart"></div>
     </div>
 </div>
 
 <!--  방문자 테이블 부분-->
-<div class="row kt_user_table">
-    <div class="col-md-12 kt_user_list">
+<div class="row">
+    <div class="col-md-12 kt-user-table">
         <!-- 방문자 테이블 템플릿 html 삽입되는 곳-->
     </div>
 </div>
