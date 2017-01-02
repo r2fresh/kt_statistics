@@ -40,8 +40,8 @@ define([
                 this.$el.html(User);
 
                 this.dayUserListTpl     = $(Template).find('.day-user-list-tpl').html();
-                this.hourUserListTpl    = $(Template).find('.hour_user_list_tpl').html();
-                this.monthUserListTpl   = $(Template).find('.month_user_list_tpl').html();
+                this.hourUserListTpl    = $(Template).find('.hour-user-list-tpl').html();
+                this.monthUserListTpl   = $(Template).find('.month-user-list-tpl').html();
                 this.dateTimePickerTpl  = $(Template).find('.kt-dateTimePicker-tpl').html();
             }
 
@@ -146,10 +146,10 @@ define([
                 'order' : [[ 0, 'desc' ]],
                 'language': {
                     paginate: {
-                        first:    '<i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음',
-                        previous: '<i class="fa fa-angle-left" aria-hidden="true"></i> 이전',
-                        next:     '다음 <i class="fa fa-angle-right" aria-hidden="true"></i>',
-                        last:     '마지막 <i class="fa fa-angle-double-right" aria-hidden="true"></i>'
+                        first:    '<strong><i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음</strong>',
+                        previous: '<strong><i class="fa fa-angle-left" aria-hidden="true"></i> 이전</strong>',
+                        next:     '<strong>다음 <i class="fa fa-angle-right" aria-hidden="true"></i></strong>',
+                        last:     '<strong>마지막 <i class="fa fa-angle-double-right" aria-hidden="true"></i></strong>'
                     }
                 }
             });
@@ -248,6 +248,14 @@ define([
                 axis: {
                     x: {
                         type: 'category'
+                    }
+                },
+                tooltip: {
+                    format: {
+                        value: function (value, ratio, id) {
+                            var format = d3.format(',');
+                            return format(value);
+                        }
                     }
                 }
             });

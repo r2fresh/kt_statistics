@@ -2,7 +2,6 @@ define([
    'module',
    'text!tpl/dashboard.html',
    'text!tpl/template.html',
-   'utils/r2Alert',
    'utils/r2Loading',
    'Model',
    'Handlebars',
@@ -11,15 +10,15 @@ define([
    'moment',
    'datetimepicker'
    ],
-   function(module, Dashboard, Template, R2Alert, R2Loading, Model, Handlebars, c3, store, moment, datetimepicker){
+   function(module, Dashboard, Template, R2Loading, Model, Handlebars, c3, store, moment, datetimepicker){
 
 	'use strict'
 
  	module.exports = new (Backbone.View.extend({
         events :{
-            'change  .kt_area_name_option': 'onChangeArea',
-            'change  .kt_menu_name_option': 'onChangeMenu',
-            'change  .kt_action_option': 'onChangeAction',
+            'change  .kt-area-name-option': 'onChangeArea',
+            'change  .kt-menu-name-option': 'onChangeMenu',
+            'change  .kt-action-option': 'onChangeAction',
  		},
 
         render:function(mainMenu){
@@ -216,17 +215,17 @@ define([
             });
 
             var template = Handlebars.compile(this.selectboxTpl);
-            this.$el.find('.kt-dashboard-menu .panel-title').after(template( {'className':'kt_area_name_option','list':this.areaArr} ));
+            this.$el.find('.kt-dashboard-menu .panel-title').after(template( {'className':'kt-area-name-option','list':this.areaArr} ));
         },
         setMenuSelectBox:function(){
 
-            if(this.$el.find('.kt-dashboard-menu .kt_menu_name_option').length > 0){
-                this.$el.find('.kt-dashboard-menu .kt_menu_name_option').remove();
+            if(this.$el.find('.kt-dashboard-menu .kt-menu-name-option').length > 0){
+                this.$el.find('.kt-dashboard-menu .kt-menu-name-option').remove();
             }
 
-            var obj = {'className':'kt_menu_name_option','list':this.areaArr[this.areaIndex].list}
+            var obj = {'className':'kt-menu-name-option','list':this.areaArr[this.areaIndex].list}
             var template = Handlebars.compile(this.selectboxTpl);
-            this.$el.find('.kt-dashboard-menu .kt_area_name_option').after(template(obj));
+            this.$el.find('.kt-dashboard-menu .kt-area-name-option').after(template(obj));
         },
 
         onChangeArea:function(e){
@@ -334,7 +333,7 @@ define([
         setActionSelectbox:function(data){
             var actionNameList = _.map(data,function(value){return{'name':value}})
             var template = Handlebars.compile(this.selectboxTpl);
-            this.$el.find('.kt-dashboard-action .panel-title').after(template( {'className':'kt_action_option','list':actionNameList} ));
+            this.$el.find('.kt-dashboard-action .panel-title').after(template( {'className':'kt-action-option','list':actionNameList} ));
         },
         getAction:function(){
 
@@ -358,7 +357,9 @@ define([
             R2Loading.allDestroy();
 
             if(jqXHR.status === 200 && textStatus === 'success'){
-                this.setActionData(data);
+                this.actionData = this.setActionData(data);
+                this.setActionTable();
+                this.setActionChart();
             }
         },
 
@@ -383,44 +384,28 @@ define([
         },
 
         setActionData : function(data){
-            var propsChange = _.map(data,function(value, key){
-                value[value.os] = value.actions
-                return _.omit(value,'actions')
+            var firstData = _.map(data, function(item, key){
+                item[item.os] = item.actions
+                return _.omit(item,'os','actions')
             })
 
-            var dateSortArr = _.uniq(_.map(propsChange,function(value, key){
+            var dateArr = _.uniq(_.map(firstData, function(value, key){
                 return value.date
             }))
 
-            var dateUniqArr = [];
+            return _.map(dateArr, function(date){
 
-            _.each(dateSortArr,function(value){
+                var basicObject = {date : date, android : 0, ios : 0}
 
-                var temp = {
-                    action : '',
-                    date : '',
-                    android : null,
-                    ios : null,
-                    serviceName : '',
-                }
-                _.each(propsChange,function(obj){
-                    if(obj.date === value) {
-                        if(obj.action != null) { temp.action = obj.action}
-                        if(obj.date != null) { temp.date = obj.date}
-                        if(obj.android != null) { temp.android = obj.android}
-                        if(obj.ios != null) { temp.ios = obj.ios}
-                        if(obj.serviceName != null) { temp.serviceName = obj.serviceName}
-
+                _.each(firstData, function(item){
+                    if(item.date === date) {
+                        if(item.android != null) { basicObject.android = item.android}
+                        if(item.ios != null) { basicObject.ios = item.ios}
                     }
                 })
-                dateUniqArr.push(temp)
-                temp = null;
+
+                return _.extend(basicObject,{total:basicObject.ios + basicObject.android})
             })
-
-            this.actionData = dateUniqArr;
-
-            this.setActionTable();
-            this.setActionChart();
         },
         setActionTable:function(){
             this.$el.find('.kt-dashboard-actino-table').empty();

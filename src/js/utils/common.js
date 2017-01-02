@@ -3,7 +3,7 @@
 
 	switch(location.hostname){
 		case 'localhost':
-			KT.HOST = 'https://cms.membership.kt.com'//'http://192.168.6.1:8000'
+			KT.HOST = 'https://cms.membership.kt.com';
 		break;
 		case 'cms.membership.kt.com':
 			KT.HOST = ''

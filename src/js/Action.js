@@ -22,17 +22,15 @@ define([
         actionListTpl : '',
         selectboxTpl : '',
         actionName : '',
-
-        startDate : '',
-        endDate : '',
-
+        actionChart : null,
+        fromDate : '',
+        toDate : '',
         actionData : '',
-
         events :{
-            'change .kt_action_option .kt_action_option': 'onChangeAction',
-            'click .kt_action_serarch_btn': 'onClickSearch',
-            'click .kt_action_table_btn': 'onClickHandlerTable',
-            'click .kt_action_chart_btn': 'onClickHandlerChart'
+            'change .kt-action-name-option': 'onActionNameHandler',
+            'click .kt-action-serarch-btn': 'onSearchHanlder',
+            'click .kt-action-table-btn': 'onClickHandlerTable',
+            'click .kt-action-chart-btn': 'onClickHandlerChart'
  		},
 
         render:function(){
@@ -46,130 +44,41 @@ define([
 
             }
 
-            // this.$el.find('.kt_action_table table').datetimepicker({
-            //     viewMode: 'days',
-            //     format: 'DD/MM/YYYY'
-            // });
-            //
-            // this.$el.find('.kt_action_table table').datetimepicker({
-            //     viewMode: 'days',
-            //     format: 'DD/MM/YYYY'
-            // });
-
-            // this.$el.find('#example').DataTable({
-            //     "ordering" : false,
-            //     "info" : false,
-            //     'filter' : false,
-            //     'lengthChange' : false
-            // });
-
-
-            this.startDate = moment().format('YYYY-MM-') + '01'
-            this.endDate = moment().format('YYYY-MM-DD')
-
-            var template = Handlebars.compile(this.dateTimePickerTpl);
-            this.$el.find('.kt_action_option .kt_action_serarch_btn').before(template({'dateTimePickerId':'startDate'}));
-            this.$el.find('.kt_action_option .kt_action_serarch_btn').before(template({'dateTimePickerId':'endDate'}));
-
-            this.$el.find('.endDate').datetimepicker({
-                viewMode : 'days',
-                format : 'YYYY/MM/DD',
-                defaultDate : 'moment',
-                ignoreReadonly: true,
-                locale :moment.locale('ko')
-            }).find('input[type="text"]').attr("readonly",true)
-            this.$el.find('.startDate').datetimepicker({
-                viewMode : 'days',
-                format : 'YYYY/MM/DD',
-                defaultDate : moment().format('YYYYMM') + '01',
-                ignoreReadonly: true,
-                locale :moment.locale('ko')
-            }).find('input[type="text"]').attr("readonly",true)
-
-
+            this.setDateTimePicker();
             this.getActionName();
         },
 
-        onClickHandlerTable:function(e){
+        setDateTimePicker:function(){
+            var template = Handlebars.compile(this.dateTimePickerTpl);
+            this.$el.find('.kt-action-option .kt-action-serarch-btn').before(template({'dateTimePickerId':'fromDate'}));
+            this.$el.find('.kt-action-option .kt-action-serarch-btn').before(template({'dateTimePickerId':'toDate'}));
 
-            e.preventDefault();
-
-            var $btn = $(e.currentTarget);
-
-            if($btn.data('type') === 'default'){
-                this.$el.find('.kt_action_table').removeClass('displayNone');
-                $btn.data('type','success');
-                $btn.removeClass('btn-default').addClass('btn-success');
-            } else {
-                this.$el.find('.kt_action_table').addClass('displayNone');
-                $btn.data('type','default');
-                $btn.removeClass('btn-success').addClass('btn-default');
+            var dateTimePickerOption = {
+                viewMode : 'days',
+                format : 'YYYY-MM-DD',
+                ignoreReadonly: true,
+                locale :moment.locale('ko'),
             }
 
-        },
-        onClickHandlerChart:function(e){
-            e.preventDefault();
-
-            var $btn = $(e.currentTarget);
-
-            if($btn.data('type') === 'default'){
-                this.$el.find('.kt_action_chart').removeClass('displayNone');
-                $btn.data('type','info');
-                $btn.removeClass('btn-default').addClass('btn-info');
-
-                this.setActionChart();
-            } else {
-                this.$el.find('.kt_action_chart').addClass('displayNone');
-                $btn.data('type','default');
-                $btn.removeClass('btn-info').addClass('btn-default');
-            }
+            this.$el.find('.fromDate').datetimepicker( _.extend(dateTimePickerOption,{'defaultDate':this.getStartDate()}) )
+            this.$el.find('.toDate').datetimepicker( _.extend(dateTimePickerOption,{'defaultDate':this.getEndDate()}) )
         },
 
-        setActionChart:function(){
-
-
-            console.log(this.actionData)
-
-            var chartData = null;
-
-            var ios = (['ios']).concat(_.pluck(this.actionData,'ios'));
-            var android = (['android']).concat(_.pluck(this.actionData,'android'));
-            var dateArr = (['x']).concat(_.pluck(this.actionData,'date'));
-
-            chartData = [dateArr, ios, android]
-
-            var chart = c3.generate({
-                bindto:'.action_chart',
-                data: {
-                    x : 'x',
-                    columns:chartData
-                },
-                axis: {
-                    x: {
-                        type: 'category'
-                    }
-                }
-            });
+        /**
+        * 검색 시작 일 가져오기
+        */
+        getStartDate:function(){
+            var date = this.$el.find('.kt-action-option .fromDate input').val();
+            return ( date === '' ) ? moment().format('YYYY-MM-') + '01' : date;
         },
 
-        onChangeAction:function(e){
-            this.actionName = $(e.currentTarget).val();
+        /**
+        * 검색 끝 일 가져오기
+        */
+        getEndDate:function(){
+            var date = this.$el.find('.kt-action-option .toDate input').val();
+            return ( date === '' ) ? moment().format('YYYY-MM-DD') : date;
         },
-
-        onClickSearch:function(e){
-            e.preventDefault();
-            this.$el.find('.kt_action_list').empty();
-
-            var startDateValue = this.$el.find('.kt_action_option .startDate input').val();
-            var endDateValue = this.$el.find('.kt_action_option .endDate input').val();
-
-            this.startDate = (startDateValue.split('/')).join('-');
-            this.endDate = (endDateValue.split('/')).join('-');
-
-            this.getAction();
-        },
-
-
 
         getActionName : function(){
 
@@ -190,13 +99,12 @@ define([
                 this.setActionSelectbox(data);
                 this.getAction();
             }
-            //this.actionName = this.$el.find('.kt_action_option .kt_action_name_option option:eq(0)').val();
         },
 
         setActionSelectbox:function(data){
             var actionNameList = _.map(data,function(value){return{'name':value}})
             var template = Handlebars.compile(this.selectboxTpl);
-            this.$el.find('.kt_action_name').html(template( {'className':'kt_action_option','list':actionNameList} ));
+            this.$el.find('.kt-action-control').html(template( {'className':'kt-action-name-option','list':actionNameList} ));
         },
 
         getActionNameError : function(jsXHR, textStatus, errorThrown){
@@ -204,9 +112,7 @@ define([
             R2Loading.allDestroy();
 
             if(textStatus === 'error'){
-
                 if(jsXHR.status === 403) {
-
                     alert('토큰이 만료 되었습니다.')
                     store.remove('auth');
                     window.location.href="#login";
@@ -219,66 +125,66 @@ define([
             R2Loading.render({'msg':'서비스별 데이터를\n불러오는 중입니다.','w':300})
 
             Model.getAction({
-                'fromDate' : this.startDate,
-                'toDate' : this.endDate,
+                'fromDate' : this.getStartDate(),
+                'toDate' : this.getEndDate(),
                 'action' : this.actionName,
                 'success' : Function.prototype.bind.call(this.getActionSuccess,this),
                 'error' : Function.prototype.bind.call(this.getActionError,this)
             })
         },
+
         getActionSuccess : function(data, textStatus, jqXHR){
-
             R2Loading.allDestroy();
+            if(jqXHR.status === 200 && textStatus === 'success'){
+                this.actionData = this.setActionData(data);
+                this.setActionTable();
+                this.setActionChart()
+            }
 
-            var propsChange = _.map(data,function(value, key){
-                value[value.os] = value.actions
-                return _.omit(value,'actions')
+        },
+
+        getActionError : function(jsXHR, textStatus, errorThrown){
+            R2Loading.allDestroy();
+            if(textStatus === 'error'){
+                if(jsXHR.status === 403) {
+                    alert('토큰이 만료 되었습니다.')
+                    store.remove('auth');
+                    window.location.href="#login";
+                }
+            }
+        },
+
+        setActionData:function(data){
+
+            var firstData = _.map(data, function(item, key){
+                item[item.os] = item.actions
+                return _.omit(item,'os','actions')
             })
 
-            var dateSortArr = _.uniq(_.map(propsChange,function(value, key){
+            var dateArr = _.uniq(_.map(firstData, function(value, key){
                 return value.date
             }))
 
-            console.log(dateSortArr)
+            return _.map(dateArr, function(date){
 
-            var dateUniqArr = [];
+                var basicObject = {date : date, android : 0, ios : 0}
 
-            _.each(dateSortArr,function(value){
-
-                var temp = {
-                    action : '',
-                    date : '',
-                    android : null,
-                    ios : null,
-                    serviceName : '',
-                }
-                _.each(propsChange,function(obj){
-                    if(obj.date === value) {
-                        if(obj.action != null) { temp.action = obj.action}
-                        if(obj.date != null) { temp.date = obj.date}
-                        if(obj.android != null) { temp.android = obj.android}
-                        if(obj.ios != null) { temp.ios = obj.ios}
-                        if(obj.serviceName != null) { temp.serviceName = obj.serviceName}
-
+                _.each(firstData, function(item){
+                    if(item.date === date) {
+                        if(item.android != null) { basicObject.android = item.android}
+                        if(item.ios != null) { basicObject.ios = item.ios}
                     }
                 })
 
-                dateUniqArr.push(temp)
-
-                temp = null;
-
+                return _.extend(basicObject,{total:basicObject.ios + basicObject.android})
             })
+        },
 
-            this.actionData = dateUniqArr;
-
-            console.log(dateUniqArr)
-
-            this.$el.find('.kt_action_list tbody').empty();
-
+        setActionTable:function(){
             var template = Handlebars.compile(this.actionListTpl);
-            this.$el.find('.kt_action_list').append(template({'actionList':dateUniqArr}));
+            this.$el.find('.kt-action-table').html(template({'actionList':this.actionData}));
 
-            this.$el.find('.kt_action_table table').DataTable({
+            this.$el.find('.kt-action-table table').DataTable({
                 "ordering" : true,
                 "info" : false,
                 'filter' : false,
@@ -286,38 +192,89 @@ define([
                 'order' : [[ 0, 'desc' ]],
                 'language': {
                     paginate: {
-                        first:    '<i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음',
-                        previous: '<i class="fa fa-angle-left" aria-hidden="true"></i> 이전',
-                        next:     '다음 <i class="fa fa-angle-right" aria-hidden="true"></i>',
-                        last:     '마지막 <i class="fa fa-angle-double-right" aria-hidden="true"></i>'
+                        first:    '<strong><i class="fa fa-angle-double-left" aria-hidden="true"></i> 처음</strong>',
+                        previous: '<strong><i class="fa fa-angle-left" aria-hidden="true"></i> 이전</strong>',
+                        next:     '<strong>다음 <i class="fa fa-angle-right" aria-hidden="true"></i></strong>',
+                        last:     '<strong>마지막 <i class="fa fa-angle-double-right" aria-hidden="true"></i></strong>'
                     }
                 }
             });
+        },
 
+        setActionChart:function(){
+            var ios = (['ios']).concat(_.pluck(this.actionData,'ios'));
+            var android = (['android']).concat(_.pluck(this.actionData,'android'));
+            var total = (['total']).concat(_.pluck(this.actionData,'total'));
+            var dateArr = (['x']).concat(_.pluck(this.actionData,'date'));
 
-            this.setActionChart()
+            var chartData = [dateArr, ios, android, total]
 
-            // console.log(propsChange)
-            //
-            // var actionType = _.map(data,function(value, key){
-            //     return value.action
-            // })
-            // console.log(_.uniq(actionType))
+            this.actionChart = c3.generate({
+                bindto:'.kt-action-chart',
+                data: {
+                    x : 'x',
+                    columns:chartData
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                },
+                tooltip: {
+                    format: {
+                        value: function (value, ratio, id) {
+                            var format = d3.format(',');
+                            return format(value);
+                        }
+                    }
+                }
+            });
+        },
+
+        onClickHandlerTable:function(e){
+
+            e.preventDefault();
+
+            var $btn = $(e.currentTarget);
+
+            if($btn.data('type') === 'default'){
+                this.$el.find('.kt-action-table').removeClass('displayNone');
+                $btn.data('type','success');
+                $btn.removeClass('btn-default').addClass('btn-success');
+            } else {
+                this.$el.find('.kt-action-table').addClass('displayNone');
+                $btn.data('type','default');
+                $btn.removeClass('btn-success').addClass('btn-default');
+            }
 
         },
-        getActionError : function(jsXHR, textStatus, errorThrown){
+        onClickHandlerChart:function(e){
 
-            R2Loading.allDestroy();
+            e.preventDefault();
 
-            if(textStatus === 'error'){
+            var $btn = $(e.currentTarget);
 
-                if(jsXHR.status === 403) {
+            if($btn.data('type') === 'default'){
+                this.$el.find('.kt-action-chart-panel').removeClass('displayNone');
+                $btn.data('type','info');
+                $btn.removeClass('btn-default').addClass('btn-info');
 
-                    alert('토큰이 만료 되었습니다.')
-                    store.remove('auth');
-                    window.location.href="#login";
-                }
+                this.actionChart.resize();
+            } else {
+                this.$el.find('.kt-action-chart-panel').addClass('displayNone');
+                $btn.data('type','default');
+                $btn.removeClass('btn-info').addClass('btn-default');
             }
+        },
+
+        onActionNameHandler:function(e){
+            e.preventDefault();
+            this.actionName = $(e.currentTarget).val();
+        },
+
+        onSearchHanlder:function(e){
+            e.preventDefault();
+            this.getAction();
         },
 
         hide : function(){

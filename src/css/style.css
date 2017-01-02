@@ -28,7 +28,14 @@ body {
 }
 
 
+.kt-top-menu .navbar-brand img{
+    filter: brightness(0) invert(1);
+    width:14%;
+}
 
+.kt-top-menu .navbar-brand{
+    color:#fff!important
+}
 
 /**
  * login Style sheet
@@ -64,9 +71,9 @@ body {
 .kt-dashboard > .kt-dashboard-main {
     margin-top:30px;
 }
-.kt-dashboard .panel-darkred > .panel-heading .kt_area_name_option,
-.kt-dashboard .panel-darkred > .panel-heading .kt_menu_name_option,
-.kt-dashboard .panel-darkred > .panel-heading .kt_action_option{
+.kt-dashboard .panel-darkred > .panel-heading .kt-area-name-option,
+.kt-dashboard .panel-darkred > .panel-heading .kt-menu-name-option,
+.kt-dashboard .panel-darkred > .panel-heading .kt-action-option{
     height:auto;
     padding:1px 0px;
 }

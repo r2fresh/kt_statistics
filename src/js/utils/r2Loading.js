@@ -23,8 +23,8 @@ define([
                     this.callback = obj.callback;
                 }
 
-                var r2Alert = R2.Dialog.render(this.className, R2_Loading);
-                this.setElement(r2Alert);
+                var r2Loading = R2.Dialog.render(this.className, R2_Loading);
+                this.setElement(r2Loading);
                 this.$el.find('.r2-dialog-main').css({'width':obj.w})
                 this.$el.find('#message').text(obj.msg);
                 R2.Dialog.rePosition(obj.className);

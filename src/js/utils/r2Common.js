@@ -4,11 +4,6 @@
     	window.R2 = window.R2 || {};
     })();
 
-    // window.Elkplus = window.Elkplus || {};
-    //
-    // window.Elkplus.flag = false;
-    // window.Elkplus.HOST = (window.location.host === 'localhost:5604') ? 'http://10.5.1.188:5601' : '';
-
     (function(R2) {
 
     	window.R2 = R2 || {};
