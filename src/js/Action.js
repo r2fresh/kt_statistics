@@ -1,3 +1,9 @@
+/*
+ * kt-membership-statistics-service 1.0.0
+ * 방문자, 메뉴, 서비스 별로 다양한 통계 데이터와 차트
+ * https://cms.membership.kt.com
+ * Copyright ©2011 - 2017 KT corp. All rights reserved.
+*/
 define([
    'module',
    'text!tpl/action.html',
@@ -213,7 +219,14 @@ define([
                 bindto:'.kt-action-chart',
                 data: {
                     x : 'x',
-                    columns:chartData
+                    columns:chartData,
+                    type: 'bar',
+                    types: {
+                        total: 'line',
+                    },
+                    groups: [
+                        ['ios','android']
+                    ]
                 },
                 axis: {
                     x: {

@@ -1,3 +1,8 @@
+/*
+ * author : r2fresh.kim@kt.com
+ * Copyright ©2011 - 2017 kt corp. All rights reserved.
+ */
+
 var express = require('express');
 var app = express();
 
@@ -10,7 +15,7 @@ app.get('/',function(req, res){
 app.use(express.static('src'));
 
 var getFunc = function(req, res) {
-    
+
     var token = req.headers['x-auth-token'];
 
     // var http = require('http');

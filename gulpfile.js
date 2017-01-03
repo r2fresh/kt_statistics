@@ -1,12 +1,25 @@
+/*
+ * author : r2fresh.kim@kt.com
+ * Copyright ©2011 - 2017 kt corp. All rights reserved.
+ */
 var gulp = require('gulp')
 , uglify = require('gulp-uglify')
 , rjs = require('gulp-requirejs')
 , gutil = require('gulp-util')
 , rename = require('gulp-rename')
 , concat = require('gulp-concat')
-, minifyCSS = require('gulp-minify-css')
+, cleanCSS = require('gulp-clean-css')
 , clean = require('gulp-clean')
 , sourcemaps = require('gulp-sourcemaps')
+, banner = require('gulp-banner')
+, pkg = require('./package.json');
+
+var bannerComment = '/*\n' +
+    ' * <%= pkg.name %> <%= pkg.version %>\n' +
+    ' * <%= pkg.description %>\n' +
+    ' * <%= pkg.homepage %>\n' +
+    ' * <%= pkg.author %>\n' +
+    '*/\n\n';
 
 /**
 * dist 폴더 지우기
@@ -28,6 +41,7 @@ gulp.task('requirejs-build',function(){
     })
     .on('error', gutil.log)
     .pipe(uglify())
+    .pipe(banner(bannerComment,{pkg:pkg}))
     .pipe(gulp.dest('src/dist/js'));
 });
 
@@ -56,8 +70,9 @@ gulp.task('css-min', function() {
         'src/css/common.css',
         'src/css/style.css'
     ])
-    .pipe(minifyCSS())
+    .pipe(cleanCSS({keepSpecialComments:0}))
     .pipe(concat('style.min.css'))
+    .pipe(banner(bannerComment,{pkg:pkg}))
     .pipe(gulp.dest('src/dist/css'))
 })
 
@@ -83,5 +98,5 @@ gulp.task('image-copy', function() {
 * build task 작성
 */
 gulp.task('build',['dist-clean'],function(){
-    gulp.start('requirejs-build','require-min','css-min','icon-copy','image-copy')
+    gulp.start('requirejs-build','require-min','css-min','icon-copy', 'image-copy')
 })

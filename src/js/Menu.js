@@ -1,3 +1,9 @@
+/*
+ * kt-membership-statistics-service 1.0.0
+ * 방문자, 메뉴, 서비스 별로 다양한 통계 데이터와 차트
+ * https://cms.membership.kt.com
+ * Copyright ©2011 - 2017 KT corp. All rights reserved.
+*/
 define([
    'module',
    'text!tpl/menu.html',
@@ -180,14 +186,22 @@ define([
 
             var ios     = (['ios']).concat(_.pluck(this.menuData.dataList,'ios'))
             ,android    = (['android']).concat(_.pluck(this.menuData.dataList,'android'))
+            ,total      = (['total']).concat(_.pluck(this.menuData.dataList,'total'))
             ,dateArr    = (['x']).concat(_.pluck(this.menuData.dataList,'date'))
-            ,chartData  = [dateArr, ios, android];
+            ,chartData  = [dateArr, ios, android, total];
 
             this.menuChart = c3.generate({
                 bindto:'.kt-menu-chart',
                 data: {
                     x : 'x',
-                    columns:chartData
+                    columns:chartData,
+                    type: 'bar',
+                    types: {
+                        total: 'line',
+                    },
+                    groups: [
+                        ['ios','android']
+                    ]
                 },
                 axis: {
                     x: {

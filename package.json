@@ -1,29 +1,22 @@
 {
-  "name": "kt_statistics",
+  "name": "kt-membership-statistics-service",
   "version": "1.0.0",
-  "description": "",
+  "description": "방문자, 메뉴, 서비스 별로 다양한 통계 데이터와 차트",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "build": "gulp build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@bitbucket.org/r2fresh/kt_statistics.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "homepage": "https://bitbucket.org/r2fresh/kt_statistics#readme",
-  "dependencies": {
-    "express": "^4.14.0"
-  },
+  "author": "Copyright ©2011 - 2017 KT corp. All rights reserved.",
+  "homepage": "https://cms.membership.kt.com",
   "devDependencies": {
-    "amd-optimize": "^0.6.1",
     "bower": "^1.8.0",
+    "express": "^4.14.0",
     "gulp": "^3.9.1",
+    "gulp-banner": "^0.1.3",
     "gulp-clean": "^0.3.2",
+    "gulp-clean-css": "^2.3.2",
     "gulp-concat": "^2.6.1",
-    "gulp-minify-css": "^1.2.4",
     "gulp-rename": "^1.2.2",
     "gulp-requirejs": "^1.0.0-rc1",
     "gulp-sourcemaps": "^1.9.1",
