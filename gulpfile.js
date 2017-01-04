@@ -1,7 +1,9 @@
 /*
- * author : r2fresh.kim@kt.com
- * Copyright ©2011 - 2017 kt corp. All rights reserved.
- */
+ * kt-membership-statistics-service 1.0.0
+ * 방문자, 메뉴, 서비스 별로 다양한 통계 데이터와 차트
+ * https://cms.membership.kt.com
+ * Copyright ©2011 - 2017 KT corp. All rights reserved.
+*/
 var gulp = require('gulp')
 , uglify = require('gulp-uglify')
 , rjs = require('gulp-requirejs')
@@ -12,6 +14,7 @@ var gulp = require('gulp')
 , clean = require('gulp-clean')
 , sourcemaps = require('gulp-sourcemaps')
 , banner = require('gulp-banner')
+, strip = require('gulp-strip-comments')
 , pkg = require('./package.json');
 
 var bannerComment = '/*\n' +
@@ -19,7 +22,7 @@ var bannerComment = '/*\n' +
     ' * <%= pkg.description %>\n' +
     ' * <%= pkg.homepage %>\n' +
     ' * <%= pkg.author %>\n' +
-    '*/\n\n';
+    '*/\n';
 
 /**
 * dist 폴더 지우기
@@ -41,6 +44,7 @@ gulp.task('requirejs-build',function(){
     })
     .on('error', gutil.log)
     .pipe(uglify())
+    .pipe(strip({safe:false}))
     .pipe(banner(bannerComment,{pkg:pkg}))
     .pipe(gulp.dest('src/dist/js'));
 });

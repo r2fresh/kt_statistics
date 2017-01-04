@@ -8,8 +8,6 @@ requirejs.config({
 	baseUrl: '/js',
 	packages: [{
 		name: 'moment',
-		// This location is relative to baseUrl. Choose bower_components
-		// or node_modules, depending on how moment was installed.
 		location: '../lib/moment/',
 		main: 'moment'
 	}],
@@ -67,7 +65,7 @@ function(Login, Main, Dashboard, Handlebars, store, numeral, Backbone){
 
 	var prevView = null, routers = null;
 
-	/**
+	/*
 	 * 초기 실행함수
 	 */
 	function init(){
@@ -76,7 +74,7 @@ function(Login, Main, Dashboard, Handlebars, store, numeral, Backbone){
 		startRouter();
 	}
 
-	/**
+	/*
 	*
 	*/
 	function setHandlebars(){
@@ -88,7 +86,7 @@ function(Login, Main, Dashboard, Handlebars, store, numeral, Backbone){
 		});
 	}
 
-	/**
+	/*
 	 * hash를 사용하여 페이지 전환 설정
 	 */
 	function routeStart(){
@@ -101,7 +99,7 @@ function(Login, Main, Dashboard, Handlebars, store, numeral, Backbone){
 		Backbone.history.start({pushstate:true})
 	}
 
-	/**
+	/*
 	 * 처음 라우터 설정
 	 */
 	function startRouter(){
@@ -114,7 +112,7 @@ function(Login, Main, Dashboard, Handlebars, store, numeral, Backbone){
 		}
 	}
 
-	/**
+	/*
 	 * #의 router가 변경되면 처음에 실행 되는 함수
 	 * @r2fresh
 	 * @param {String} guideType - 선택된 가이드
@@ -123,10 +121,12 @@ function(Login, Main, Dashboard, Handlebars, store, numeral, Backbone){
 	 */
 	function changeHash( guideType ){
 
-		// 로그인이 되었는지 체크
-		// hash가 null이 아니고, login이 아니라면
-		// localstorage의 auth 객체를 확인 해서 토근이 존재하는지 확인
-		// 없으면 login 페이지로 전환하고 아니면 패스
+		/*
+		* 로그인이 되었는지 체크
+		* hash가 null이 아니고, login이 아니라면
+		* localstorage의 auth 객체를 확인 해서 토근이 존재하는지 확인
+		* 없으면 login 페이지로 전환하고 아니면 패스
+		*/
 		if(!(KT.util.parseHash() !== null && KT.util.parseHash()[0] === 'login')){
 			if(store.get('auth') === undefined){
 				routers.navigate('#login',{ trigger: true, replace: true })
@@ -157,7 +157,6 @@ function(Login, Main, Dashboard, Handlebars, store, numeral, Backbone){
 				Main.show();
 			break
 			default :
-				// 지정된 hash로 접근하면 dashboard로 리다이렉트
 				window.location.href="#"
 			break;
 		}
