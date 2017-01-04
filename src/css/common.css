@@ -118,13 +118,6 @@
     opacity: .5;
 }
 
-/*@media (min-width: 768px){
-    .r2-dialog-main {
-        width: 600px;
-        margin: 30px auto;
-    }
-}*/
-
 .r2-dialog-main {
     position: relative;
     /*width: 600px;*/

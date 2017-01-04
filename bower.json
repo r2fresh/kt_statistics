@@ -1,12 +1,11 @@
 {
-  "name": "kt_statistics",
-  "description": "",
+  "name": "kt-membership-statistics-service",
+  "description": "방문자, 메뉴, 서비스 별로 다양한 통계 데이터와 차트",
   "main": "index.js",
   "authors": [
-    "r2fresh <r2fresh.kim@kt.com>"
+    "Copyright ©2011 - 2017 KT corp. All rights reserved."
   ],
-  "license": "ISC",
-  "homepage": "",
+  "homepage": "https://cms.membership.kt.com",
   "ignore": [
     "**/.*",
     "node_modules",
