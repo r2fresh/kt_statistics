@@ -13,6 +13,6 @@ app.get('/',function(req, res){
 
 app.use(express.static('src'));
 
-app.listen((process.env.PORT || 5000), function () {
-    console.log('Example app listening on port 5000!');
+app.listen((process.env.PORT || 8080), function () {
+    console.log('Example app listening on port 8080!');
 });
