@@ -15,6 +15,7 @@ requirejs.config({
 		'text':'../lib/text/text',
 		'tpl':'../template',
 		'jquery':'../lib/jquery/dist/jquery',
+		'bootstrap':'../lib/bootstrap/dist/js/bootstrap',
 		'Handlebars':'../lib/handlebars/handlebars',
 		'd3':'../lib/d3/d3',
 		'c3':'../lib/c3/c3',
@@ -41,6 +42,10 @@ requirejs.config({
 			deps:['underscore'],
 			exports:'Backbone'
 		},
+		'bootstrap':{
+			deps:['jquery'],
+			exports:'bootstrap'
+		},
 		'dataTable':{
 			deps:['datatables.net'],
 			exports:'dataTable'
@@ -59,7 +64,8 @@ requirejs([
 	'dataTable',
 	'moment/locale/ko',
 	'r2Common',
-	'common'
+	'common',
+	'bootstrap'
 ],
 function(Login, Main, Dashboard, Handlebars, store, numeral, Backbone){
 

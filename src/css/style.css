@@ -4,6 +4,7 @@
  * https://cms.membership.kt.com
  * Copyright ©2011 - 2017 KT corp. All rights reserved.
 */
+
 body {
     padding-top: 50px;
 }
@@ -93,11 +94,56 @@ body {
 .kt-dashboard > .kt-dashboard-main .kt-dashboard-more {
     display: inline-block;float:right;
 }
+
+.kt-dashboard .kt-dashboard-menu select,
+.kt-dashboard .kt-dashboard-menu .panel-title,
+.kt-dashboard .kt-dashboard-action select,
+.kt-dashboard .kt-dashboard-action .panel-title {
+    margin-bottom:10px;
+}
+
+
+.kt-search-period .fromDate,
+.kt-search-period .toDate{
+    margin-bottom:10px;
+}
+
+.kt-menu .kt-menu-control select{
+    margin-bottom:10px;
+}
+
+
 @media (min-width: 992px){
     .kt-dashboard-user .user-table,
     .kt-dashboard-menu .menu-table,
     .kt-dashboard-action .action-table {
         border-right: 1px dashed #710000;
+    }
+    .kt-dashboard .kt-dashboard-menu select,
+    .kt-dashboard .kt-dashboard-menu .panel-title,
+    .kt-dashboard .kt-dashboard-action select,
+    .kt-dashboard .kt-dashboard-action .panel-title,
+    .kt-search-period .fromDate,
+    .kt-search-period .toDate,
+    .kt-menu .kt-menu-control select {
+        margin-bottom:0px!important;
+    }
+}
+
+@media (min-width: 768px) {
+    .form-inline .form-control {
+        display: inline-block;
+        width: auto;
+        vertical-align: middle;
+    }
+    .kt-dashboard .kt-dashboard-menu select,
+    .kt-dashboard .kt-dashboard-menu .panel-title,
+    .kt-dashboard .kt-dashboard-action select,
+    .kt-dashboard .kt-dashboard-action .panel-title,
+    .kt-search-period .fromDate,
+    .kt-search-period .toDate,
+    .kt-menu .kt-menu-control select {
+        margin-bottom:0px!important;
     }
 }
 
@@ -108,3 +154,6 @@ body {
     margin-top:7px;
     margin-bottom:12px;
 }
+
+
+.kt-menu kt
