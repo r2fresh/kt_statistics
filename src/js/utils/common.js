@@ -11,7 +11,7 @@
 		case 'localhost':
 			KT.HOST = 'https://cms.membership.kt.com';
 		break;
-		case 'cms.membership.kt.com':
+		default :
 			KT.HOST = ''
 		break;
 	}
