@@ -18,9 +18,7 @@
 })();
 
 (function(KT){
-	KT.util = {};
-
-	Object.assign(KT.util,{
+	KT.util = {
 
 		parseHash : function(){
 			var hash;
@@ -47,5 +45,5 @@
 			return hrs + '시간 ' + mins + '분 ' + secs + '초';
 		}
 
-	})
+	}
 })(KT);
